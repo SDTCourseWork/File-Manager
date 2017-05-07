@@ -200,38 +200,41 @@ void TreeFiles_visuale (VirtualFolder* folder/*, std::string address*/)
 
 
 
+		if (!TreeFiles_visuale__diving(&folder, &level)) //погружение
+			break;
 
 
 
+	}
+	//если мы обработали последнюю папку родительского каталога, то всплываем (но не выше переданного каталога)
+}
+int TreeFiles_visuale__diving (VirtualFolder** folder/*, std::string address*/, int* level)
+{
 		int i = 0;
 		int isset_dota_folder_in_TF = 0;
-		for (auto VF_find_dota_folder : folder->v_child_folders) //если есть дочерняя папка, то погружаемся
+		for (auto VF_find_dota_folder : (*folder)->v_child_folders) //если есть дочерняя папка, то погружаемся
 		{
 			cout << "dota: " << VF_find_dota_folder->properties_string["Name"] << " "
-				<< "position " << folder->position["visualization"] << endl;
-			if (i == folder->position["visualization"]) //Идем до необработанной папки
+				<< "position " << (*folder)->position["visualization"] << endl;
+			if (i == (*folder)->position["visualization"]) //Идем до необработанной папки
 			{
 				cout << "z nen ,sk" << endl;
-				folder = VF_find_dota_folder;
+				(*folder) = VF_find_dota_folder;
 				isset_dota_folder_in_TF = 1;
-				level++;
+				(*level)++;
 				break;
 			}
 			i++;
 		}
-		if (!isset_dota_folder_in_TF) //Если не нашлась дочерняя папка - всплываем
+		if (!isset_dota_folder_in_TF) //Если не нашлась дочерняя не обработанная папка - всплываем
 		{
-			level--;
-			if (level < 0)
-				break;
-			folder = folder->parent;
+			(*level)--;
+			if ((*level) < 0) //Если всплывать больше некуда, то ломаем цикл
+				return 0;
+			(*folder) = (*folder)->parent;
 		}
-	}
-	//если мы обработали последнюю папку родительского каталога, то всплываем (но не выше переданного каталога)
-}
-void TreeFiles_visuale__dive (VirtualFolder* folder/*, std::string address*/)
-{
 
+		return 1;
 }
 void TreeFiles_visuale__print_property_folder__string (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties)
 {
