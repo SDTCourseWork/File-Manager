@@ -8,8 +8,8 @@
 
 using namespace std;
 
-#include "bicycle.cpp"
-#include "ftree_files_infrastructure.cpp"
+#include "function/bicycle.cpp"
+#include "function/ftree_files_infrastructure.cpp"
 
 int main()
 {
