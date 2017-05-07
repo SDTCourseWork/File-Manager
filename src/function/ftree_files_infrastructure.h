@@ -6,10 +6,7 @@
 #include <map>
 #include <vector>
 
-struct properties
-{
-	
-};
+
 class VirtualFolder
 {
 	public:

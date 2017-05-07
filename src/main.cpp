@@ -15,6 +15,10 @@ int main()
 {
 	VirtualFolder *test = TreeFiles_create();
 	TreeFiles_add_folder(test, "a\\b\\f/ono.jpt");
+	for (auto dot_folder : test->v_child_folders)
+	{
+		cout << dot_folder->properties_string["Name"] << endl;
+	}
 	TreeFiles_visuale(test);
 	// if (TreeFiles_find_folder(test, "asd\\fd/ono.jpt") != NULL)
 	// 	cout << "+" << endl;

@@ -107,9 +107,11 @@ void TreeFiles_add_folder (VirtualFolder* VF_dad_folder, std::string address)
 
 		if (!isset_folder_in_TF)
 		{
-			VirtualFolder* VF_new_folder = new VirtualFolder; //Создаем дочернюю папку
+			VirtualFolder* VF_new_folder = new VirtualFolder; //Создаем дочернюю папку и ЗАДАЕМ ЕЁ СВОЙСВА
 			VF_new_folder->properties_string["Name"] = s_address_folder;
-			VF_dad_folder->v_child_folders.emplace_back(VF_new_folder);
+			VF_new_folder->parent = VF_dad_folder;
+
+			VF_dad_folder->v_child_folders.emplace_back(VF_new_folder); //Добавляем ее в вектор дочерних папок
 
 
 			vector < VirtualFolder* >::iterator VFITER_save_dota_folder = VF_dad_folder->v_child_folders.end(); //Указываем на последний добавленный элемент
@@ -168,37 +170,56 @@ void TreeFiles_visuale (VirtualFolder* folder/*, std::string address*/)
 		cout << endl;
 
 
-		// //Печатаем файлы и их свойства
-		// for (it_int = folder->files_int.begin(); it_int != folder->files_int.end(); it_int++)
-		// {
-		// 	cout << tabulation << "	|-- " << (*it_int)["Name"] << "	";
-		// 	cout << endl;
-		// }
+
+		folder->parent->position["visualization"]++;
 
 		
-		// for (it_str = folder->files_string.begin(); it_str != folder->files_string.end(); it_str++)
-		// {
-		// 	vector < map<string, int> >::iterator it_int;
-		// 	vector < map<string, string> >::iterator it_str;
-		// 	cout << tabulation << "	|-- " << (*it_str)["Name"] << "	";
-		// 	TreeFiles_visuale__print_property_files__string(folder, tabulation, mandatory_properties, it_str);
-		// 	TreeFiles_visuale__print_property_files__int(folder, tabulation, mandatory_properties, it_int);
-		// 	cout << endl;
-		// }
-
-
-
-
-
-		folder->position["visualization"]++;
-
-
-		if (/*<!--*# */ folder->position["visualization"] < folder->v_child_folders.size()) //если есть дочерняя папка, то погружаемся
+		//Печатаем файлы и их свойства
+		vector < map<string, string> >::iterator it_str;
+		vector < map<string, int> >::iterator it_int;
+		it_int = folder->files_int.begin();
+		it_str = folder->files_string.begin();
+		while (true)
 		{
-			folder = folder->v_child_folders[folder->position["visualization"]];
-			level++;
+			if (!((it_int != folder->files_int.end()) 
+				|| (it_str != folder->files_string.end()))) //если хотя бы один из циклов может работать - работаем
+				break; //если ни один из полуциклов не работает, то ломаем цикл
+
+			cout << tabulation << "	|-- " << (*it_str)["Name"] << "	";
+
+			if (it_str != folder->files_string.end()) //Печатаем все текстовые свойства, если полуцикл работает
+				TreeFiles_visuale__print_property_files__string(folder, tabulation, mandatory_properties, it_str);
+			if (it_int != folder->files_int.end()) //Печатаем все целочисленные свойства, если полуцикл работает
+				TreeFiles_visuale__print_property_files__int(folder, tabulation, mandatory_properties, it_int);
+
+			cout << endl;
+
+			it_int++;
+			it_str++;
 		}
-		else
+
+
+
+
+
+
+		int i = 0;
+		int isset_dota_folder_in_TF = 0;
+		for (auto VF_find_dota_folder : folder->v_child_folders) //если есть дочерняя папка, то погружаемся
+		{
+			cout << "dota: " << VF_find_dota_folder->properties_string["Name"] << " "
+				<< "position " << folder->position["visualization"] << endl;
+			if (i == folder->position["visualization"]) //Идем до необработанной папки
+			{
+				cout << "z nen ,sk" << endl;
+				folder = VF_find_dota_folder;
+				isset_dota_folder_in_TF = 1;
+				level++;
+				break;
+			}
+			i++;
+		}
+		if (!isset_dota_folder_in_TF) //Если не нашлась дочерняя папка - всплываем
 		{
 			level--;
 			if (level < 0)
@@ -207,6 +228,10 @@ void TreeFiles_visuale (VirtualFolder* folder/*, std::string address*/)
 		}
 	}
 	//если мы обработали последнюю папку родительского каталога, то всплываем (но не выше переданного каталога)
+}
+void TreeFiles_visuale__dive (VirtualFolder* folder/*, std::string address*/)
+{
+
 }
 void TreeFiles_visuale__print_property_folder__string (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties)
 {
