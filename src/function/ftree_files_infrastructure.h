@@ -27,7 +27,7 @@ void TreeFiles_add_folder (VirtualFolder* folder, std::string address);
 
 
 void TreeFiles_visuale (VirtualFolder* folder/*, std::string address*/);
-int TreeFiles_visuale__diving (VirtualFolder** folder, int* level);
+// int TreeFiles_visuale__diving (VirtualFolder** folder, int* level);
 void TreeFiles_visuale__print_property_folder__string (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties);
 void TreeFiles_visuale__print_property_folder__int (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties);
 void TreeFiles_visuale__print_property_files__string (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties, vector < map<string, string> >::iterator it_str);
