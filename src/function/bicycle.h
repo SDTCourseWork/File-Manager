@@ -7,4 +7,4 @@
 
 
 vector<string> Split (string str, char delimetr);
-void replace(std::string& str, const std::string& from, const std::string& to);
+// void replace(std::string& str, const std::string& from, const std::string& to);

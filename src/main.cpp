@@ -13,13 +13,32 @@ using namespace std;
 
 int main()
 {
+
 	VirtualFolder *test = TreeFiles_create();
-	TreeFiles_add_folder(test, "a\\b\\f/ono.jpt");
-	for (auto dot_folder : test->v_child_folders)
-	{
-		cout << dot_folder->properties_string["Name"] << endl;
-	}
-	TreeFiles_visuale(test);
+	TreeFiles_add(test, "1a/");
+	TreeFiles_add(test, "1a/2a/");
+	TreeFiles_add(test, "1b/");
+	// TreeFiles_add(test, "1a/2a/");
+	// TreeFiles_add(test, "1a/2a/3a/");
+	// TreeFiles_add(test, "1a/2a/3a/");
+
+	// TreeFiles_add(test, "1a/2a/3b/");
+	TreeFiles_visuale(test);	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	// if (TreeFiles_find_folder(test, "asd\\fd/ono.jpt") != NULL)
 	// 	cout << "+" << endl;
 	// else
