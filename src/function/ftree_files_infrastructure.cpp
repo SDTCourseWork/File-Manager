@@ -191,16 +191,16 @@ vector <string> TreeFiles_add__separation_folder (std::string address)
 // ::	входящий каталог не найден
 // 	исходящий каталог не найден
 
-// #ПРОГУЛКА ПО СТРУКТУРЕ (это проход по всем файлам, не важно как они вложены в папки)
-// <	(ДФ ред)
-// >	(каждый раз выдается файл на обработку)
-// ::	конец каталога
-
 // #ВИЗУАЛИЗАЦИЯ КАТАЛОГА
 // <	(ДФ)
 // <	адрес каталога
 // >	в консоли выводится дерево файлов
 // ::	
+
+// #ПРОГУЛКА ПО СТРУКТУРЕ (это проход по всем файлам, не важно как они вложены в папки)
+// <	(ДФ ред)
+// >	(каждый раз выдается файл на обработку)
+// ::	конец каталога
 void TreeFiles_visuale (VirtualFolder* VF_current_folder/*, std::string address*/)
 {
 	set<string> mandatory_properties; //Свойства которые не выводятся в описании файла
@@ -256,23 +256,6 @@ void TreeFiles_visuale (VirtualFolder* VF_current_folder/*, std::string address*
 
 	}
 }
-void TESTING_PRINT_ALL_DOTA_FOLDER (VirtualFolder* VF_current_folder, int level)
-{
-	VirtualFolder* VF_save_dota_folder = NULL;
-	int i = 0;
-	cout << "count: " << VF_current_folder->v_child_folders.size() << endl;
-	for (auto VF_find_dota_folder : VF_current_folder->v_child_folders) //Перебираем дочерние папки
-	{
-		string fod = VF_find_dota_folder->properties_string["Name"];
-		cout << VF_current_folder->properties_string["Name"] << " >>>> " << i << "   :   " << fod << endl;
-		i++;
-	}
-	cout << endl;
-	cout << endl;
-	cout << endl;
-	cout << endl;
-	cout << endl;
-}
 VirtualFolder* TreeFiles_visuale__diving (VirtualFolder* VF_current_folder)
 {
 	VirtualFolder* VF_save_dota_folder = NULL;
@@ -314,6 +297,7 @@ void TreeFiles_visuale__print_files (VirtualFolder* VF_current_folder, set<strin
 		cout << tabulation << "	|-- " << (*Iter_files)->properties_string["Name"] << "	";
 
 		TreeFiles_visuale__print_property_files__string(VF_current_folder, tabulation, mandatory_properties, *Iter_files);
+		TreeFiles_visuale__print_property_files__int(VF_current_folder, tabulation, mandatory_properties, *Iter_files);
 
 		cout << endl;
 	}
@@ -386,13 +370,40 @@ void TreeFiles_visuale__print_property_files__string (VirtualFolder* folder, std
 			cout << " [" << (*itr_string).first << ": " << (*itr_string).second << "]";
 	}
 }
-/*void TreeFiles_visuale__print_property_files__int (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties, map<string, int> it_int)
+void TreeFiles_visuale__print_property_files__int (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties, VirtualFolder__file* VFF_file)
 {
 	map<string, int>::const_iterator itr_int;
 
-	for (itr_int = (*it_int).begin(); itr_int != (*it_int).end(); ++itr_int)
+	for (itr_int = (VFF_file->properties_int).begin(); itr_int != (VFF_file->properties_int).end(); ++itr_int)
 	{
 		if (mandatory_properties.find((*itr_int).first) == mandatory_properties.end()) //Печатаем свойство, если его нет в исключениях
 			cout << " [" << (*itr_int).first << ": " << (*itr_int).second << "]";
 	}
-}*/
+}
+
+
+
+
+
+
+//-------------ОТЛАДОЧНЫЕ-------------------------
+
+
+
+void TESTING_PRINT_ALL_DOTA_FOLDER (VirtualFolder* VF_current_folder, int level)
+{
+	VirtualFolder* VF_save_dota_folder = NULL;
+	int i = 0;
+	cout << "count: " << VF_current_folder->v_child_folders.size() << endl;
+	for (auto VF_find_dota_folder : VF_current_folder->v_child_folders) //Перебираем дочерние папки
+	{
+		string fod = VF_find_dota_folder->properties_string["Name"];
+		cout << VF_current_folder->properties_string["Name"] << " >>>> " << i << "   :   " << fod << endl;
+		i++;
+	}
+	cout << endl;
+	cout << endl;
+	cout << endl;
+	cout << endl;
+	cout << endl;
+}
