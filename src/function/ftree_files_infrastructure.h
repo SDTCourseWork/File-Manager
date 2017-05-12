@@ -6,7 +6,12 @@
 #include <map>
 #include <vector>
 
-
+class VirtualFolder__file
+{
+	public:
+		map<string, int> properties_int; // *числовыми свойствами вложенных файлов
+		map<string, string> properties_string; // *строковыми свойствами вложенных файлов
+};
 class VirtualFolder
 {
 	public:
@@ -16,8 +21,8 @@ class VirtualFolder
 
 		map <string, int> properties_int; // *указатель на массив с числовыми свойствами свойствами папки
 		map <string, string> properties_string; // *указатель на массив с строковыми свойствами свойствами папки
-		vector < map<string, int> > files_int; // *динамический массив с указателями на массивы с числовыми свойствами вложенных файлов
-		vector < map<string, string> > files_string; // *динамический массив с указателями на массивы с строковыми свойствами вложенных файлов
+
+		vector < VirtualFolder__file* > files;
 };
 
 VirtualFolder* TreeFiles_create ();
@@ -26,6 +31,7 @@ VirtualFolder* TreeFiles_find_folder (VirtualFolder* folder, std::string address
 
 
 void TreeFiles_add (VirtualFolder* folder, std::string address);
+	void TreeFiles_add__file_add(std::string s_file_name, VirtualFolder* VF_folder);
 	VirtualFolder* TreeFiles_add__end_vector_of_VF (VirtualFolder* VF_dad_folder);
 	VirtualFolder* TreeFiles_add__create_new_local_VF (VirtualFolder* VF_dad_folder, std::string s_folder_of_address);
 	VirtualFolder* TreeFiles_add__find_dota_folder (VirtualFolder* VF_dad_folder, std::string s_folder_of_address);
@@ -48,8 +54,8 @@ void TreeFiles_visuale (VirtualFolder* folder/*, std::string address*/);
 	void TreeFiles_visuale__print_files(VirtualFolder* VF_current_folder, set<string> mandatory_properties, string tabulation);
 		void TreeFiles_visuale__print_property_folder__string (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties);
 		void TreeFiles_visuale__print_property_folder__int (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties);
-		void TreeFiles_visuale__print_property_files__string (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties, vector < map<string, string> >::iterator it_str);
-		void TreeFiles_visuale__print_property_files__int (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties, vector < map<string, int> >::iterator it_int);
+		void TreeFiles_visuale__print_property_files__string (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties, VirtualFolder__file* VFF_file);
+		void TreeFiles_visuale__print_property_files__int (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties, VirtualFolder__file* VFF_file);
 	int TreeFiles_visuale__isset_parent_folder(VirtualFolder* VF_current_folder, int level);
 	VirtualFolder* TreeFiles_visuale__surfacing(VirtualFolder* VF_current_folder, int* level);
 

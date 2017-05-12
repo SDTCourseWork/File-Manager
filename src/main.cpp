@@ -11,10 +11,11 @@ using namespace std;
 #include "function/bicycle.cpp"
 #include "function/ftree_files_infrastructure.cpp"
 
+
 int main()
 {
 	
-	VirtualFolder *test = TreeFiles_create();
+	VirtualFolder* test = new VirtualFolder;
 	TreeFiles_add(test, "1a/");
 	TreeFiles_add(test, "1a/2a/");
 	TreeFiles_add(test, "1a/2a/fileone");

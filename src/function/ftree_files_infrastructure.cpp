@@ -12,9 +12,7 @@ using namespace std; //указывает на то, что мы использ�
 #include "ftree_files_infrastructure.h"
 
 
-//##ДОБАВИТЬ
-//##ОПИСАТЬ ОБЪЕКТ
-//##ПОЛУЧИТЬ ОПИСАНИЕ ОБЪЕКТА
+
 //##УДАЛИТЬ
 //##КОПИРОВАТЬ
 
@@ -22,10 +20,10 @@ using namespace std; //указывает на то, что мы использ�
 // >	(ДФ) пустое
 VirtualFolder* TreeFiles_create ()
 {
-	VirtualFolder* temp = new VirtualFolder;
-	temp->properties_string["Name"] = "TF";
+	VirtualFolder* folder = new VirtualFolder;
+	folder->properties_string["Name"] = "TF";
 
-	return temp;
+	return folder;
 }
 
 // #ПОИСК НАЛИЧИЯ КАТАЛОГА
@@ -71,13 +69,10 @@ VirtualFolder* TreeFiles_find_folder (VirtualFolder* folder, std::string address
 		return NULL;
 }
 
-// #КАРТА СВОЙСТВ ФАЙЛА
-// <	местоназначение каталога
-// >	(ДФ ред)
-// map<string, value> map; TreeFiles_find_folder (VirtualFolder* folder, std::string address)
 
 
-// #ДОБАВИТЬ КАТАЛОГ
+
+// #ДОБАВИТЬ
 // <	местоназначение каталога
 // >	(ДФ ред)
 void TreeFiles_add (VirtualFolder* VF_dad_folder, std::string address)
@@ -106,10 +101,15 @@ void TreeFiles_add (VirtualFolder* VF_dad_folder, std::string address)
 		VF_dad_folder = VF_save_dota_folder;
 	}
 
-	// if (s_file_name != "")
-	// 	TreeFiles_add__file_add(s_file_name, VF_dad_folder);
+	if (s_file_name != "")
+		TreeFiles_add__file_add(s_file_name, VF_dad_folder);
 }
-// void TreeFiles_add__file_add(std::string s_file_name, VirtualFolder* VF_folder)
+void TreeFiles_add__file_add(std::string s_file_name, VirtualFolder* VF_folder)
+{
+	VirtualFolder__file* new_file = new VirtualFolder__file;
+	new_file->properties_string["Name"] = s_file_name;
+	VF_folder->files.push_back(new_file);
+}
 
 VirtualFolder* TreeFiles_add__end_vector_of_VF (VirtualFolder* VF_dad_folder)
 {
@@ -170,16 +170,21 @@ vector <string> TreeFiles_add__separation_folder (std::string address)
 	return v_folders_of_address;
 }
 
-// #ДОБАВИТЬ СВОЙСТВО КАТАЛОГУ
+// #ДОБАВИТЬ СВОЙСТВО
 // <	(ДФ)
 // <	адрес папки
 
-// #УДАЛИТЬ КАТАЛОГ (с дочерними каталогами)
+// #ПОЛУЧИТЬ СВОЙСТВО
+// <	местоназначение каталога
+// >	(ДФ ред)
+// map<string, value> map; TreeFiles_find_folder (VirtualFolder* folder, std::string address)
+
+// #УДАЛИТЬ (с дочерними каталогами)
 // <	местонахождение каталога
 // >	(ДФ ред)
-// ::	удаляемы каталог не найден
+// ::	удаляемый каталог не найден
 
-// #ПЕРЕМЕСТИТЬ КАТАЛОГ
+// #КОПИРОВАТЬ
 // <	местонахождение каталога
 // <	местоназначение каталога
 // >	(ДФ ред)
@@ -300,29 +305,17 @@ void TreeFiles_visuale__print_folder (VirtualFolder* VF_current_folder, set<stri
 }
 void TreeFiles_visuale__print_files (VirtualFolder* VF_current_folder, set<string> mandatory_properties, string tabulation)
 { //Печатаем файлы и их свойства
-	vector < map<string, string> >::iterator it_str;
-	vector < map<string, int> >::iterator it_int;
-	it_int = VF_current_folder->files_int.begin();
-	it_str = VF_current_folder->files_string.begin();
+	vector < VirtualFolder__file* >::iterator Iter_files;
+	
 
 
-	while (true)
+	for (Iter_files = VF_current_folder->files.begin(); Iter_files != VF_current_folder->files.end(); Iter_files++)
 	{
-		if (!((it_int != VF_current_folder->files_int.end()) 
-			|| (it_str != VF_current_folder->files_string.end()))) //если хотя бы один из циклов может работать - работаем
-			break; //если ни один из полуциклов не работает, то ломаем цикл
+		cout << tabulation << "	|-- " << (*Iter_files)->properties_string["Name"] << "	";
 
-		cout << tabulation << "	|-- " << (*it_str)["Name"] << "	";
-
-		if (it_str != VF_current_folder->files_string.end()) //Печатаем все текстовые свойства, если полуцикл работает
-			TreeFiles_visuale__print_property_files__string(VF_current_folder, tabulation, mandatory_properties, it_str);
-		if (it_int != VF_current_folder->files_int.end()) //Печатаем все целочисленные свойства, если полуцикл работает
-			TreeFiles_visuale__print_property_files__int(VF_current_folder, tabulation, mandatory_properties, it_int);
+		TreeFiles_visuale__print_property_files__string(VF_current_folder, tabulation, mandatory_properties, *Iter_files);
 
 		cout << endl;
-
-		it_int++;
-		it_str++;
 	}
 }
 VirtualFolder* TreeFiles_visuale__surfacing (VirtualFolder* VF_current_folder, int* level)
@@ -371,17 +364,29 @@ void TreeFiles_visuale__print_property_folder__int (VirtualFolder* folder, std::
 			cout << " [" << (*itr_int).first << ": " << (*itr_int).second << "]";
 	}
 }
-void TreeFiles_visuale__print_property_files__string (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties, vector < map<string, string> >::iterator it_str)
+
+
+
+
+
+
+
+
+
+
+
+
+void TreeFiles_visuale__print_property_files__string (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties, VirtualFolder__file* VFF_file)
 {
 	map<string, string>::const_iterator itr_string;
 
-	for (itr_string = (*it_str).begin(); itr_string != (*it_str).end(); ++itr_string)
+	for (itr_string = (VFF_file->properties_string).begin(); itr_string != (VFF_file->properties_string).end(); ++itr_string)
 	{
 		if (mandatory_properties.find((*itr_string).first) == mandatory_properties.end()) //Печатаем свойство, если его нет в исключениях
 			cout << " [" << (*itr_string).first << ": " << (*itr_string).second << "]";
 	}
 }
-void TreeFiles_visuale__print_property_files__int (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties, vector < map<string, int> >::iterator it_int)
+/*void TreeFiles_visuale__print_property_files__int (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties, map<string, int> it_int)
 {
 	map<string, int>::const_iterator itr_int;
 
@@ -390,4 +395,4 @@ void TreeFiles_visuale__print_property_files__int (VirtualFolder* folder, std::s
 		if (mandatory_properties.find((*itr_int).first) == mandatory_properties.end()) //Печатаем свойство, если его нет в исключениях
 			cout << " [" << (*itr_int).first << ": " << (*itr_int).second << "]";
 	}
-}
+}*/
