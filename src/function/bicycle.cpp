@@ -32,6 +32,45 @@ void replace(std::string& str, const std::string& from, const std::string& to) {
 
 
 
+int std_string_compare (std::string str1, std::string str2)
+{
+	if (str1.size() > str2.size())
+	{
+		return 1;
+	}
+	else if (str1.size() < str2.size())
+	{
+		return -1;
+	}
+	else if (str1.size() == str2.size())
+	{
+		int str_length = str1.size();
+		int inequality = 0;
+		int a_B_b = 0;
+		int b_B_a = 0;
+		for (int i = 0; i < str_length; ++i)
+		{
+			a_B_b = str1[i] > str2[i];
+			b_B_a = str1[i] < str2[i];
+
+			if (!((a_B_b == 0) && (b_B_a == 0)))
+			{
+				inequality = 1;
+				break;
+			}
+		}
+		if (inequality)
+		{
+			if (a_B_b)
+				return 1;
+			else
+				return -1;
+		}
+		else
+			return 0;
+	}
+}
+
 
 
 

@@ -13,16 +13,24 @@ using namespace std;
 
 int main()
 {
-
+	
 	VirtualFolder *test = TreeFiles_create();
 	TreeFiles_add(test, "1a/");
 	TreeFiles_add(test, "1a/2a/");
-	TreeFiles_add(test, "1b/");
-	// TreeFiles_add(test, "1a/2a/");
-	// TreeFiles_add(test, "1a/2a/3a/");
-	// TreeFiles_add(test, "1a/2a/3a/");
+	TreeFiles_add(test, "1a/2a/fileone");
+	TreeFiles_add(test, "1a/2a/filetwo");
 
-	// TreeFiles_add(test, "1a/2a/3b/");
+	TreeFiles_add(test, "1a/2a/");
+	TreeFiles_add(test, "1a/2a/3a/adf/asdf/asdf/asdf/asdf/sad/fasdf/asdf");
+	TreeFiles_add(test, "1a/2a/3a/adf/asdf/asdf/asdf/asasdfddf/sad/fasdf/asdf");
+	TreeFiles_add(test, "1a/2b/3a/");
+
+	TreeFiles_add(test, "1a/2a/3b/");
+	TreeFiles_add(test, "1b/");
+	TreeFiles_add(test, "1c/");
+
+
+
 	TreeFiles_visuale(test);	
 
 

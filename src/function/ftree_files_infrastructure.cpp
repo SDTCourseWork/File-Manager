@@ -23,6 +23,7 @@ using namespace std; //указывает на то, что мы использ�
 VirtualFolder* TreeFiles_create ()
 {
 	VirtualFolder* temp = new VirtualFolder;
+	temp->properties_string["Name"] = "TF";
 
 	return temp;
 }
@@ -90,13 +91,10 @@ void TreeFiles_add (VirtualFolder* VF_dad_folder, std::string address)
 
 
 
-	int isset_folder_in_TF = 0;
 	VirtualFolder* VF_save_dota_folder;
-	int iteration = 0;
 	for (auto s_folder_of_address : v_folders_of_address)
 	{
 		VirtualFolder* VF_save_dota_folder = TreeFiles_add__find_dota_folder(VF_dad_folder, s_folder_of_address);
-		// cout << (VF_save_dota_folder == NULL) << endl; //L
 		if (VF_save_dota_folder == NULL)
 		{
 			VirtualFolder* VF_new_folder = TreeFiles_add__create_new_local_VF(VF_dad_folder, s_folder_of_address); //Создаем новую папку, записывая в нее свойства
@@ -105,11 +103,14 @@ void TreeFiles_add (VirtualFolder* VF_dad_folder, std::string address)
 			VF_save_dota_folder = TreeFiles_add__end_vector_of_VF(VF_dad_folder); //Указываем на последний добавленный элемент
 		}
 
-		// cout << "iteration : " << iteration << endl; //L
-		// TESTING_PRINT_ALL_DOTA_FOLDER(VF_dad_folder, 5);
 		VF_dad_folder = VF_save_dota_folder;
 	}
+
+	// if (s_file_name != "")
+	// 	TreeFiles_add__file_add(s_file_name, VF_dad_folder);
 }
+// void TreeFiles_add__file_add(std::string s_file_name, VirtualFolder* VF_folder)
+
 VirtualFolder* TreeFiles_add__end_vector_of_VF (VirtualFolder* VF_dad_folder)
 {
 	vector < VirtualFolder* >::iterator VFITER_save_dota_folder = VF_dad_folder->v_child_folders.end();
@@ -131,18 +132,13 @@ VirtualFolder* TreeFiles_add__find_dota_folder (VirtualFolder* VF_dad_folder, st
 	int ttest = 0;
 	for (auto VF_dota_folder : VF_dad_folder->v_child_folders)
 	{
-		ttest = s_address_folder.compare(VF_dota_folder->properties_string["Name"]) != std::string::npos;
-		// cout << "in_compare: " << s_address_folder << "   <====>     " << VF_dota_folder->properties_string["Name"] << " result " << ttest << endl; //L
-		if (ttest == 0)
+		if (std_string_compare(s_address_folder, VF_dota_folder->properties_string["Name"]) == 0)
 		{ //Погружаемся, если нашлась дочерняя папка с подходящим названием
-			// cout << "popal cuda" << endl; //L
 			isset_folder_in_TF = 1;
 			VF_save_dota_folder = VF_dota_folder;
 			break;
 		}
 	}
-	// cout << "ravno_null " << (VF_save_dota_folder == NULL) << endl; //L
-
 	return VF_save_dota_folder;
 }
 std::string TreeFiles_add__separation_file (std::string address)
@@ -208,64 +204,51 @@ void TreeFiles_visuale (VirtualFolder* VF_current_folder/*, std::string address*
 
 	VF_current_folder = TreeFiles_visuale__diving(VF_current_folder); //Первое погружение для того, чтобы не печатать пустой элемент
 
-
 	int level = 0;
-	string tabulation;
 	while (true)
 	{
-		tabulation = "";
-
-		for (int i = 0; i < level; ++i)
-			tabulation += "	";
-
-
-		cout << " test_on_NULL  " << (VF_current_folder == NULL) << endl;
-
 		if (VF_current_folder != NULL)
 		{
+			string tabulation = "";
+
+			for (int i = 0; i < level; ++i)
+				tabulation += "	";
+
+
 			TreeFiles_visuale__print_folder(VF_current_folder, mandatory_properties, tabulation); //Печатаем свойства папки и вложенные файлы
 			TreeFiles_visuale__print_files(VF_current_folder, mandatory_properties, tabulation);
 			VF_current_folder->parent->position["visualization"]++;
 		}
 
 
-		if (TreeFiles_visuale__isset_dota_folder(VF_current_folder, level)) //Если есть дочерняя папка для печати
+
+		VirtualFolder* VF_diving = TreeFiles_visuale__diving(VF_current_folder); //погружаемся
+		if (VF_diving != NULL)
 		{
-			VF_current_folder = TreeFiles_visuale__diving(VF_current_folder); //погружаемся
-			cout << "bil on diving " << (VF_current_folder == NULL) << endl;
+			VF_current_folder = VF_diving;
 			level++;
+			continue;
 		}
-		else if (TreeFiles_visuale__isset_equal_folder(VF_current_folder, level)) //Иначе Если есть папка на этом уровне для печати
-		{
-			VF_current_folder = TreeFiles_visuale__next_equal_folder(VF_current_folder, level); //Получаем указатель на следующую папку
-		}
-		else if (/*TreeFiles_visuale__isset_parent_folder(VF_current_folder, level)*/ true)	//Иначе если есть куда всплывать
-		{
-			int visualization_ending = 0;
-			while (true)
-			{
-				VF_current_folder = TreeFiles_visuale__surfacing(VF_current_folder, level); //всплываем
-				level--;
 
 
-				VF_current_folder = TreeFiles_visuale__next_equal_folder(VF_current_folder, level); //Получаем указатель на следующую папку
-				if (VF_current_folder != NULL) //Если нашли необработанную папку
-				{
-					break;
-				}
-				if (level <= 1) //если больше всплыват некуда, то прекращаем визуализацию
-				{
-					visualization_ending = 1;
-					break;
-				}
-			}
-			if (visualization_ending)
-				break;
+		VirtualFolder* VF_next = TreeFiles_visuale__next_equal_folder(VF_current_folder, level); //Получаем указатель на следующую папку
+		if (VF_next != NULL)
+		{
+			VF_current_folder = VF_next;
+			continue;
+		}
+
+
+		VirtualFolder* VF_surfacing = TreeFiles_visuale__surfacing(VF_current_folder, &level); //всплываем
+		if (VF_surfacing != NULL)
+		{
+			level--;
+			VF_current_folder = TreeFiles_visuale__next_equal_folder(VF_surfacing, level);
+			continue;
 		}
 		else
-		{
 			break; //Визуализация окончена
-		}
+
 	}
 }
 void TESTING_PRINT_ALL_DOTA_FOLDER (VirtualFolder* VF_current_folder, int level)
@@ -285,21 +268,13 @@ void TESTING_PRINT_ALL_DOTA_FOLDER (VirtualFolder* VF_current_folder, int level)
 	cout << endl;
 	cout << endl;
 }
-int TreeFiles_visuale__isset_dota_folder (VirtualFolder* VF_current_folder, int level)
-{
-
-	if (TreeFiles_visuale__diving(VF_current_folder) == NULL)
-		return 0;
-	else
-		return 1;
-}
 VirtualFolder* TreeFiles_visuale__diving (VirtualFolder* VF_current_folder)
-{//****он возможно не может возвращать дальше 1-ого элемента
+{
 	VirtualFolder* VF_save_dota_folder = NULL;
 	int i = 0;
+
 	for (auto VF_find_dota_folder : VF_current_folder->v_child_folders) //Перебираем дочерние папки
 	{
-		// cout << VF_find_dota_folder->properties_string["Name"] << " i " << i << " position " << VF_current_folder->position["visualization"] << endl;
 		if (i == VF_current_folder->position["visualization"]) //Если дошли до необработанной дочерней папки
 		{
 			VF_save_dota_folder = VF_find_dota_folder;
@@ -312,21 +287,9 @@ VirtualFolder* TreeFiles_visuale__diving (VirtualFolder* VF_current_folder)
 
 	return VF_save_dota_folder;
 }
-int TreeFiles_visuale__isset_equal_folder (VirtualFolder* VF_current_folder, int level)
-{
-	if (level == 0) //Нету равных папок для 0-ого уровня
-		return 0;
-
-
-	return TreeFiles_visuale__isset_dota_folder(VF_current_folder->parent, level);
-}
 VirtualFolder* TreeFiles_visuale__next_equal_folder (VirtualFolder* VF_current_folder, int level)
 {
-	VirtualFolder* test = TreeFiles_visuale__diving(VF_current_folder->parent);
-
-
-
-	return test;
+	return TreeFiles_visuale__diving(VF_current_folder->parent);
 }
 void TreeFiles_visuale__print_folder (VirtualFolder* VF_current_folder, set<string> mandatory_properties, string tabulation)
 { //Печатаем текущую папку и ее свойства
@@ -362,23 +325,28 @@ void TreeFiles_visuale__print_files (VirtualFolder* VF_current_folder, set<strin
 		it_str++;
 	}
 }
-int TreeFiles_visuale__isset_parent_folder (VirtualFolder* VF_current_folder, int level)
+VirtualFolder* TreeFiles_visuale__surfacing (VirtualFolder* VF_current_folder, int* level)
 {
-	if (level <= 1)
-		return 0; //первому уровню незачем всплывать
+	VirtualFolder* VF_parent = VF_current_folder->parent;
+	// level--;
+	while (true)
+	{
+		if (VF_parent->parent->position["visualization"] >= VF_parent->parent->v_child_folders.size()) //Если количество обработанных элементов на уровне этого объекта больше или равно количеству элементов
+		{
+			VF_parent = VF_parent->parent; //Всплываем
+			(*level)--;
+		}
+		else
+			break; //Необработанный родитель уже найден, поиск окончен
 
-	VirtualFolder* VF_testing = TreeFiles_visuale__surfacing(VF_current_folder, level);
 
-	return !(VF_testing == NULL);
-}
-VirtualFolder* TreeFiles_visuale__surfacing (VirtualFolder* VF_current_folder, int level)
-{
-	if (level <= 1)
-		return NULL; //первому уровню незачем всплывать
-
-
-	return VF_current_folder->parent;
-
+		if ((*level) < 1) //?
+		{
+			VF_parent = NULL; //Конец визуализации
+			break;
+		}
+	}
+	return VF_parent;
 }
 
 
