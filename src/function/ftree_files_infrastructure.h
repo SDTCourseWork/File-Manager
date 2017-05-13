@@ -56,22 +56,34 @@ void TreeFiles_add (VirtualFolder* folder, std::string address);
 
 
 
+void TreeFiles_delete (VirtualFolder* VF_folder, std::string address);
+VirtualFolder* TreeFiles_delete__passage(VirtualFolder* VF_current_folder);
+VirtualFolder* TreeFiles_delete__correct_pointer (VirtualFolder* VF_current_folder, int *level);
+void TreeFiles_delete__delete_node (VirtualFolder* VF_node);
 
-VirtualFolder* TreeFiles_visuale (VirtualFolder* folder/*, std::string address*/);
-	VirtualFolder* TreeFiles_visuale__CORRECT_POINTER (VirtualFolder* VF_current_folder, int* level);
 
-	int TreeFiles_visuale__isset_dota_folder (VirtualFolder* VF_current_folder, int level);
-	VirtualFolder* TreeFiles_visuale__diving (VirtualFolder* VF_current_folder);
-	int TreeFiles_visuale__isset_equal_folder (VirtualFolder* VF_current_folder, int level);
-	VirtualFolder* TreeFiles_visuale__next_equal_folder(VirtualFolder* VF_current_folder, int level);
+
+
+
+void TreeFiles_visuale (VirtualFolder* TF);
 	void TreeFiles_visuale__print_folder(VirtualFolder* VF_current_folder, set<string> mandatory_properties, string tabulation);
 	void TreeFiles_visuale__print_files(VirtualFolder* VF_current_folder, set<string> mandatory_properties, string tabulation);
 		void TreeFiles_visuale__print_property_folder__string (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties);
 		void TreeFiles_visuale__print_property_folder__int (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties);
 		void TreeFiles_visuale__print_property_files__string (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties, VirtualFolder__file* VFF_file);
 		void TreeFiles_visuale__print_property_files__int (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties, VirtualFolder__file* VFF_file);
-	int TreeFiles_visuale__isset_parent_folder(VirtualFolder* VF_current_folder, int level);
-	VirtualFolder* TreeFiles_visuale__surfacing(VirtualFolder* VF_current_folder, int* level);
+
+VirtualFolder* TreeFiles_pass (VirtualFolder* folder/*, std::string address*/);
+	int TreeFiles_pass__properties_level (VirtualFolder* TF);
+
+	VirtualFolder* TreeFiles_pass__CORRECT_POINTER (VirtualFolder* VF_current_folder, int* level);
+
+	int TreeFiles_pass__isset_dota_folder (VirtualFolder* VF_current_folder, int level);
+	VirtualFolder* TreeFiles_pass__diving (VirtualFolder* VF_current_folder);
+	int TreeFiles_pass__isset_equal_folder (VirtualFolder* VF_current_folder, int level);
+	VirtualFolder* TreeFiles_pass__next_equal_folder(VirtualFolder* VF_current_folder, int level);
+	int TreeFiles_pass__isset_parent_folder(VirtualFolder* VF_current_folder, int level);
+	VirtualFolder* TreeFiles_pass__surfacing(VirtualFolder* VF_current_folder, int* level);
 
 
 
