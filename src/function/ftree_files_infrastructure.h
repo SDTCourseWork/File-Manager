@@ -6,6 +6,8 @@
 #include <map>
 #include <vector>
 
+
+
 class VirtualFolder__file
 {
 	public:
@@ -15,6 +17,16 @@ class VirtualFolder__file
 class VirtualFolder
 {
 	public:
+		class VirtualFolder__global_position
+		{
+			public:
+				VirtualFolder* folder;
+				int file;
+				int level;
+		};
+
+
+
 		VirtualFolder *parent; // *указатель на родительскую папку
 		vector < VirtualFolder* > v_child_folders; // *динамический массив с указателями на дочерние папки
 		map <string, int> position; // *динамический массив с указателями на описание положения для каждой метки
@@ -23,6 +35,10 @@ class VirtualFolder
 		map <string, string> properties_string; // *указатель на массив с строковыми свойствами свойствами папки
 
 		vector < VirtualFolder__file* > files;
+		map < string, VirtualFolder__global_position > GLobal_position;
+
+
+		
 };
 
 VirtualFolder* TreeFiles_create ();
@@ -41,10 +57,8 @@ void TreeFiles_add (VirtualFolder* folder, std::string address);
 
 
 
-void TreeFiles_visuale (VirtualFolder* folder/*, std::string address*/);
-
-	void TESTING_PRINT_ALL_DOTA_FOLDER (VirtualFolder* VF_current_folder, int level);
-
+VirtualFolder* TreeFiles_visuale (VirtualFolder* folder/*, std::string address*/);
+	VirtualFolder* TreeFiles_visuale__CORRECT_POINTER (VirtualFolder* VF_current_folder, int* level);
 
 	int TreeFiles_visuale__isset_dota_folder (VirtualFolder* VF_current_folder, int level);
 	VirtualFolder* TreeFiles_visuale__diving (VirtualFolder* VF_current_folder);
@@ -61,5 +75,6 @@ void TreeFiles_visuale (VirtualFolder* folder/*, std::string address*/);
 
 
 
+void TESTING_PRINT_ALL_DOTA_FOLDER (VirtualFolder* VF_current_folder, int level);
 
 #endif // TEACHER_H_INCLUDED

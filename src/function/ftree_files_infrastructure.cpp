@@ -201,60 +201,71 @@ vector <string> TreeFiles_add__separation_folder (std::string address)
 // <	(ДФ ред)
 // >	(каждый раз выдается файл на обработку)
 // ::	конец каталога
-void TreeFiles_visuale (VirtualFolder* VF_current_folder/*, std::string address*/)
+VirtualFolder* TreeFiles_visuale (VirtualFolder* TF/*, std::string address*/)
 {
 	set<string> mandatory_properties; //Свойства которые не выводятся в описании файла
 	mandatory_properties.insert("Name");
 
+	int* level = &(TF->GLobal_position["visualization"].level);
+	int* file_position = &(TF->GLobal_position["visualization"].file);
+	VirtualFolder* VF_current_folder;
+	if (TF->GLobal_position["visualization"].folder == NULL)
+		VF_current_folder = TF;
+	else
+		VF_current_folder = TF->GLobal_position["visualization"].folder;
+	string tabulation = "";
 
-	VF_current_folder = TreeFiles_visuale__diving(VF_current_folder); //Первое погружение для того, чтобы не печатать пустой элемент
 
-	int level = 0;
-	while (true)
+	if (TF == VF_current_folder)
+		VF_current_folder = TreeFiles_visuale__diving(VF_current_folder); //Первое погружение для того, чтобы не печатать пустой элемент, корень дерева
+
+
+	for (int i = 0; i < *level; ++i)
+		tabulation += "	";
+
+	TreeFiles_visuale__print_folder(VF_current_folder, mandatory_properties, tabulation); //Печатаем свойства папки и вложенные файлы
+	TreeFiles_visuale__print_files(VF_current_folder, mandatory_properties, tabulation);
+
+
+
+	VF_current_folder->parent->position["visualization"]++;
+	VF_current_folder = TreeFiles_visuale__CORRECT_POINTER(VF_current_folder, &(*level));
+	if (VF_current_folder == NULL)
+		return NULL; //Визуализация окончена
+	else
 	{
-		if (VF_current_folder != NULL)
-		{
-			string tabulation = "";
-
-			for (int i = 0; i < level; ++i)
-				tabulation += "	";
-
-
-			TreeFiles_visuale__print_folder(VF_current_folder, mandatory_properties, tabulation); //Печатаем свойства папки и вложенные файлы
-			TreeFiles_visuale__print_files(VF_current_folder, mandatory_properties, tabulation);
-			VF_current_folder->parent->position["visualization"]++;
-		}
-
-
-
-		VirtualFolder* VF_diving = TreeFiles_visuale__diving(VF_current_folder); //погружаемся
-		if (VF_diving != NULL)
-		{
-			VF_current_folder = VF_diving;
-			level++;
-			continue;
-		}
-
-
-		VirtualFolder* VF_next = TreeFiles_visuale__next_equal_folder(VF_current_folder, level); //Получаем указатель на следующую папку
-		if (VF_next != NULL)
-		{
-			VF_current_folder = VF_next;
-			continue;
-		}
-
-
-		VirtualFolder* VF_surfacing = TreeFiles_visuale__surfacing(VF_current_folder, &level); //всплываем
-		if (VF_surfacing != NULL)
-		{
-			level--;
-			VF_current_folder = TreeFiles_visuale__next_equal_folder(VF_surfacing, level);
-			continue;
-		}
-		else
-			break; //Визуализация окончена
-
+		TF->GLobal_position["visualization"].folder = VF_current_folder;
+		return VF_current_folder;
 	}
+}
+VirtualFolder* TreeFiles_visuale__CORRECT_POINTER (VirtualFolder* VF_current_folder, int* level)
+{
+	VirtualFolder* VF_diving = TreeFiles_visuale__diving(VF_current_folder); //погружаемся
+	if (VF_diving != NULL)
+	{
+		VF_current_folder = VF_diving;
+		(*level)++;
+		return VF_current_folder;
+	}
+
+
+	VirtualFolder* VF_next = TreeFiles_visuale__next_equal_folder(VF_current_folder, (*level)); //Получаем указатель на следующую папку
+	if (VF_next != NULL)
+	{
+		VF_current_folder = VF_next;
+		return VF_current_folder;
+	}
+
+
+	VirtualFolder* VF_surfacing = TreeFiles_visuale__surfacing(VF_current_folder, &(*level)); //всплываем
+	if (VF_surfacing != NULL)
+	{
+		(*level)--;
+		VF_current_folder = TreeFiles_visuale__next_equal_folder(VF_surfacing, (*level));
+		return VF_current_folder;
+	}
+	else
+		return NULL;
 }
 VirtualFolder* TreeFiles_visuale__diving (VirtualFolder* VF_current_folder)
 {
@@ -289,9 +300,6 @@ void TreeFiles_visuale__print_folder (VirtualFolder* VF_current_folder, set<stri
 void TreeFiles_visuale__print_files (VirtualFolder* VF_current_folder, set<string> mandatory_properties, string tabulation)
 { //Печатаем файлы и их свойства
 	vector < VirtualFolder__file* >::iterator Iter_files;
-	
-
-
 	for (Iter_files = VF_current_folder->files.begin(); Iter_files != VF_current_folder->files.end(); Iter_files++)
 	{
 		cout << tabulation << "	|-- " << (*Iter_files)->properties_string["Name"] << "	";

@@ -32,7 +32,11 @@ int main()
 
 
 
-	TreeFiles_visuale(test);	
+	while (true)
+	{
+		if (TreeFiles_visuale(test) == NULL)
+			break;
+	}
 
 
 
