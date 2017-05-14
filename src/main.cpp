@@ -30,8 +30,10 @@ int main()
 	TreeFiles_add(test, "1b/");
 	TreeFiles_add(test, "1c/");
 
-	VirtualFolder* a1 = TreeFiles_find_folder (test, "1a/2a/3a/4/5/6/7/8/9/");
-	cout << TreeFiles_get_address_of_folder(a1) << endl;
+	// VirtualFolder* a1 = TreeFiles_find_folder (test, "1a/2a/3a/4/5/6/7/8/9/");
+	std::string str1 = "1a/2a/3a/4/5/6/7/8/9/";
+	vector<string> vec = Explode(str1, '/');
+	cout << Implode(vec, "/") << endl;
 
 
 
@@ -61,7 +63,7 @@ TreeFiles_visuale  (test);
 
 	// string str = "adfasdf;asdfsdf;asdf";
 	// vector<string> v;
-	// v = Split(str, ';');
+	// v = Explode(str, ';');
 	// vector < string >::iterator it_int; //объявляю итератор it
 	// for (it_int = v.begin(); it_int != v.end(); it_int++)
 	// {

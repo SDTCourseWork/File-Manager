@@ -8,7 +8,8 @@
 
 #include "bicycle.h"
 
-vector<string> Split (string str, char delimetr)
+// #Разделяет строку по символу-разделителю в вектор
+vector<string> Explode (string str, char delimetr)
 {
 	vector<string> list_string;
 	istringstream f(str);
@@ -19,6 +20,7 @@ vector<string> Split (string str, char delimetr)
 	}
 	return list_string;
 }
+// Соединяет вектор в строку, добавляя между ними строку-разделитель
 /*std::string Implode_invert (std::vector<string> v_strings, std::string delimetr)
 {
 	std::vector<string>::iterator string_of_vector;
@@ -30,17 +32,22 @@ vector<string> Split (string str, char delimetr)
 
 	return sum_string;
 }*/
-/*std::string Implode (std::vector<string> v_strings, std::string delimetr)
+std::string Implode (vector<string> v_strings, std::string delimetr)
 {
-	std::vector<string>::iterator string_of_vector;
+	int i = 0;
+	vector<string>::iterator string_of_vector;
 	std::string sum_string = "";
 	for (string_of_vector = v_strings.begin(); string_of_vector != v_strings.end(); ++string_of_vector)
 	{
-		sum_string = sum_string + delimetr + string_of_vector;
+		if (i > 0)
+			sum_string = sum_string + delimetr + *string_of_vector;
+		else
+			sum_string = sum_string + *string_of_vector;
+		i++;
 	}
 
 	return sum_string;
-}*/
+}
 void replace(std::string& str, const std::string& from, const std::string& to) {
 	while (true)
 	{

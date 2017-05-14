@@ -167,7 +167,7 @@ std::string TreeFiles_add__separation_file (std::string address)
 
 	if (address[address.size() - 1] != '/') //если нам передали файл (просто папки оканчиваются на '/')
 	{
-		v_folders_of_address = Split(address, '/');
+		v_folders_of_address = Explode(address, '/');
 		vector <string>::iterator temp_itertat = v_folders_of_address.end(); //Извлекаем имя файла полного пути
 		s_file_name = *(temp_itertat - 1);
 		v_folders_of_address.erase(temp_itertat - 1); //удаляем последний элемент
@@ -178,7 +178,7 @@ std::string TreeFiles_add__separation_file (std::string address)
 vector <string> TreeFiles_add__separation_folder (std::string address)
 {
 	vector <string> v_folders_of_address;
-	v_folders_of_address = Split(address, '/');
+	v_folders_of_address = Explode(address, '/');
 
 	if (address[address.size() - 1] != '/') //если нам передали файл (просто папки оканчиваются на '/')
 	{
