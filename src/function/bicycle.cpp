@@ -19,6 +19,28 @@ vector<string> Split (string str, char delimetr)
 	}
 	return list_string;
 }
+/*std::string Implode_invert (std::vector<string> v_strings, std::string delimetr)
+{
+	std::vector<string>::iterator string_of_vector;
+	std::string sum_string = "";
+	for (string_of_vector = v_strings.begin(); string_of_vector != v_strings.end(); ++string_of_vector)
+	{
+		sum_string = string_of_vector + delimetr + sum_string;
+	}
+
+	return sum_string;
+}*/
+/*std::string Implode (std::vector<string> v_strings, std::string delimetr)
+{
+	std::vector<string>::iterator string_of_vector;
+	std::string sum_string = "";
+	for (string_of_vector = v_strings.begin(); string_of_vector != v_strings.end(); ++string_of_vector)
+	{
+		sum_string = sum_string + delimetr + string_of_vector;
+	}
+
+	return sum_string;
+}*/
 void replace(std::string& str, const std::string& from, const std::string& to) {
 	while (true)
 	{

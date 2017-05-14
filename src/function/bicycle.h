@@ -7,5 +7,6 @@
 
 
 vector<string> Split (string str, char delimetr);
+std::string Implode (std::vector<string> v_strings, std::string delimetr);
 int std_string_compare (std::string str1, std::string str2);
 // void replace(std::string& str, const std::string& from, const std::string& to);

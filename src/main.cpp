@@ -22,7 +22,7 @@ int main()
 	TreeFiles_add(test, "1a/2a/filetwo");
 
 	TreeFiles_add(test, "1a/2a/");
-	TreeFiles_add(test, "1a/2a/3a/adf/asdf/asdf/asdf/asdf/sad/fasdf/asdf");
+	TreeFiles_add(test, "1a/2a/3a/4/5/6/7/8/9/");
 	TreeFiles_add(test, "1a/2a/3a/adf/asdf/asdf/asdf/asasdfddf/sad/fasdf/asdf");
 	TreeFiles_add(test, "1a/2b/3a/");
 
@@ -30,9 +30,14 @@ int main()
 	TreeFiles_add(test, "1b/");
 	TreeFiles_add(test, "1c/");
 
+	VirtualFolder* a1 = TreeFiles_find_folder (test, "1a/2a/3a/4/5/6/7/8/9/");
+	cout << TreeFiles_get_address_of_folder(a1) << endl;
 
 
-TreeFiles_visuale (test);
+
+
+
+TreeFiles_visuale  (test);
 
 
 
