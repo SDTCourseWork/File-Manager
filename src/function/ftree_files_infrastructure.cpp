@@ -26,16 +26,40 @@ VirtualFolder* TreeFiles_create ()
 }
 
 
-/*VirtualFolder__file* TreeFiles_find_file (VirtualFolder* VF_dad_folder, std::string address) //? вернуть объект файл
+
+
+
+
+
+
+
+
+
+
+VirtualFolder__file* TreeFiles_find_file (VirtualFolder* VF_dad_folder, std::string address)
 {
 	replace(address, "\\", "/");
 
 
 	std::string s_file_name = TreeFiles_add__separation_file(address);
 	vector <string> v_folders_of_address = TreeFiles_add__separation_folder(address);
-	cout << address << endl;
-	cout << Implode (v_folders_of_address, "/") << endl;
-}*/
+	std::string s_address_of_current_folder = Implode (v_folders_of_address, "/") + "/";
+	VirtualFolder* VF_current_folder = TreeFiles_find_folder(VF_dad_folder, s_address_of_current_folder);
+
+	return  TreeFiles_add__find_dota_file(s_file_name, VF_current_folder);
+}
+
+
+
+
+
+
+
+
+
+
+
+
 // #ПОИСК НАЛИЧИЯ КАТАЛОГА
 // <	местоназначение каталога
 // >	(ДФ ред)
@@ -88,7 +112,15 @@ VirtualFolder* TreeFiles_find_folder (VirtualFolder* VF_dad_folder, std::string 
 
 
 
-// #ДОБАВИТЬ
+
+
+
+
+
+
+
+
+// #ДОБАВИТЬ ОБЪЕКТ
 // <	местоназначение каталога
 // >	(ДФ ред)
 void TreeFiles_add (VirtualFolder* VF_dad_folder, std::string address)
@@ -118,14 +150,30 @@ void TreeFiles_add (VirtualFolder* VF_dad_folder, std::string address)
 		level++;
 	}
 
-	if (s_file_name != "")
+	if ((s_file_name != "") && (TreeFiles_add__find_dota_file(s_file_name, VF_dad_folder) == NULL))
 		TreeFiles_add__file_add(s_file_name, VF_dad_folder);
 }
-void TreeFiles_add__file_add(std::string s_file_name, VirtualFolder* VF_folder)
+VirtualFolder__file* TreeFiles_add__find_dota_file (std::string s_file_name, VirtualFolder* VF_folder)
+{ //<!--~ поиск не работает
+	vector < VirtualFolder__file* >::iterator Iter_files;
+	VirtualFolder__file* VFF_dota_file = NULL;
+	int isset_dota_file = 0;
+	for (Iter_files = VF_folder->files.begin(); Iter_files != VF_folder->files.end(); Iter_files++)
+	{
+		if (std_string_compare(s_file_name, (*Iter_files)->properties_string["Name"]) == 0)
+		{
+			isset_dota_file = 1;
+			VFF_dota_file = *Iter_files;
+			break; //файл найден, Поиск окончен
+		}
+	}
+
+	return VFF_dota_file;
+}
+void TreeFiles_add__file_add (std::string s_file_name, VirtualFolder* VF_folder)
 {
 	VirtualFolder__file* new_file = new VirtualFolder__file;
 	new_file->properties_string["Name"] = s_file_name;
-	// new_file->parent = VF_folder;
 	VF_folder->files.push_back(new_file);
 }
 
@@ -190,6 +238,59 @@ vector <string> TreeFiles_add__separation_folder (std::string address)
 }
 
 
+
+
+
+
+
+
+
+
+
+
+// #ПРОВЕРИТЬ НАЛИЧИЕ СВОЙСТВА
+int TreeFiles_isset_property_string (VirtualFolder* TF, std::string title)
+{
+	return (TF->properties_string).find(title) != (TF->properties_string).end();
+}
+int TreeFiles_isset_property_int (VirtualFolder* TF, std::string title)
+{
+	return (TF->properties_int).find(title) != (TF->properties_int).end();
+}
+// #ИЗМЕНИТЬ СВОЙСТВО string
+void TreeFiles_change_property_string (VirtualFolder* TF, std::string title, std::string property)
+{
+	if (TF != NULL)
+		TF->properties_string[title] = property;
+}
+// #ИЗМЕНИТЬ СВОЙСТВО int
+void TreeFiles_change_property_int (VirtualFolder* TF, std::string title, int property)
+{
+	if (TF != NULL)
+		TF->properties_int[title] = property;
+}
+// #ПОЛУЧИТЬ СВОЙСТВО string
+std::string TreeFiles_get_property_string (VirtualFolder* TF, std::string title)
+{
+	return TF->properties_string[title];
+}
+// #ПОЛУЧИТЬ СВОЙСТВО int
+int TreeFiles_get_property_int (VirtualFolder* TF, std::string title)
+{
+	return TF->properties_int[title];
+}
+
+
+
+
+
+
+
+
+
+
+
+
 // #ПОЛУЧИТЬ АДРЕСС ОБЪЕКТА
 std::string TreeFiles_get_address_of_folder (VirtualFolder* VF_current_folder)
 {
@@ -214,18 +315,23 @@ std::string TreeFiles_get_address_of_folder (VirtualFolder* VF_current_folder)
 	return s_address;
 }
 
-/*std::string TreeFiles_get_address_of_file (VirtualFolder__file* VF_file)
-{
-	std::string address = TreeFiles_get_address_of_folder(VF_file->parent);
-	return address + VF_file->properties_string["Name"];
-}*/
+
+
+
+
+
+
+
+
+
+
 
 // #УДАЛИТЬ (с дочерними каталогами)
 // <	местонахождение каталога
 // >	(ДФ ред)
 // ::	удаляемый каталог не найден
 void TreeFiles_delete (VirtualFolder* TF, std::string address)
-{
+{ //<!--~ настоящий код ниже закомментен
 /*	while (true)
 	{
 		VF_folder = TreeFiles_delete__passage(VF_folder);
@@ -257,6 +363,18 @@ void TreeFiles_delete (VirtualFolder* TF, std::string address)
 		}
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
 VirtualFolder* TreeFiles_delete__passage(VirtualFolder* TF)
 {
 	VirtualFolder* VF_current_folder;
@@ -320,12 +438,32 @@ void TreeFiles_delete__delete_node (VirtualFolder* VF_node)
 }
 
 
+
+
+
+
+
+
+
+
+
+
 // #КОПИРОВАТЬ
 // <	местонахождение каталога
 // <	местоназначение каталога
 // >	(ДФ ред)
 // ::	входящий каталог не найден
 // 	исходящий каталог не найден
+
+
+
+
+
+
+
+
+
+
 
 
 // #ВИЗУАЛИЗАЦИЯ КАТАЛОГА
@@ -416,14 +554,35 @@ void TreeFiles_visuale__print_property_files__int (VirtualFolder* folder, std::s
 }
 
 
+
+
+
+
+
+
+
+
+
+// #ПРОГУЛКА ПО ФАЙЛАМ ПАПКИ
+// VirtualFolder__file* TreeFiles_pass_files (VirtualFolder* VF_current_folder, std::)
+
+
+
+
+
+
+
+
+
+
+
+
 // #ПРОГУЛКА ПО СТРУКТУРЕ (это проход по всем файлам, не важно как они вложены в папки)
 // <	(ДФ ред)
 // >	(каждый раз выдается файл на обработку)
 // ::	конец каталога
-VirtualFolder* TreeFiles_pass (VirtualFolder* TF, std::string label, std::string address)
+VirtualFolder* TreeFiles_pass (VirtualFolder* TF, std::string label, std::string address) //<!--~ не используется адресс
 {
-
-
 	VirtualFolder* VF_current_folder;
 	if (TF->GLobal_position[label].folder == NULL)
 	{
@@ -538,10 +697,11 @@ VirtualFolder* TreeFiles_pass__surfacing (VirtualFolder* VF_current_folder, int*
 
 
 
+
+
+
+
 //-------------ОТЛАДОЧНЫЕ-------------------------
-
-
-
 void TESTING_PRINT_ALL_DOTA_FOLDER (VirtualFolder* VF_current_folder, int level)
 {
 	VirtualFolder* VF_save_dota_folder = NULL;

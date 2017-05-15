@@ -30,16 +30,22 @@ int main()
 	TreeFiles_add(test, "1b/");
 	TreeFiles_add(test, "1c/");
 
-	// VirtualFolder* a1 = TreeFiles_find_folder (test, "1a/2a/3a/4/5/6/7/8/9/");
-	std::string str1 = "1a/2a/3a/4/5/6/7/8/9/";
-	vector<string> vec = Explode(str1, '/');
-	cout << Implode(vec, "/") << endl;
+	VirtualFolder* test_folder = TreeFiles_find_folder(test, "1a/2a/");
+
+cout << "TreeFiles_isset_property_string " << TreeFiles_isset_property_string(test_folder, "Name") << endl;
+cout << "TreeFiles_isset_property_int " << TreeFiles_isset_property_int(test_folder, "Name") << endl;
+// #ИЗМЕНИТЬ СВОЙСТВО string
+TreeFiles_change_property_string(test_folder, "Name", "name38");
+// #ИЗМЕНИТЬ СВОЙСТВО int
+TreeFiles_change_property_int(test_folder, "Name", 38);
+// #ПОЛУЧИТЬ СВОЙСТВО string
+cout << "TreeFiles_get_property_string " << TreeFiles_get_property_string(test_folder, "Name") << endl;
+// #ПОЛУЧИТЬ СВОЙСТВО int
+cout << "TreeFiles_get_property_int " << TreeFiles_get_property_int(test_folder, "Name") << endl;
 
 
 
-
-
-TreeFiles_visuale  (test);
+// TreeFiles_visuale  (test);
 
 
 

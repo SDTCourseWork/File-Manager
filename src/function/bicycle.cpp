@@ -21,17 +21,6 @@ vector<string> Explode (string str, char delimetr)
 	return list_string;
 }
 // Соединяет вектор в строку, добавляя между ними строку-разделитель
-/*std::string Implode_invert (std::vector<string> v_strings, std::string delimetr)
-{
-	std::vector<string>::iterator string_of_vector;
-	std::string sum_string = "";
-	for (string_of_vector = v_strings.begin(); string_of_vector != v_strings.end(); ++string_of_vector)
-	{
-		sum_string = string_of_vector + delimetr + sum_string;
-	}
-
-	return sum_string;
-}*/
 std::string Implode (vector<string> v_strings, std::string delimetr)
 {
 	int i = 0;
@@ -42,7 +31,23 @@ std::string Implode (vector<string> v_strings, std::string delimetr)
 		if (i > 0)
 			sum_string = sum_string + delimetr + *string_of_vector;
 		else
-			sum_string = sum_string + *string_of_vector;
+			sum_string = *string_of_vector;
+		i++;
+	}
+
+	return sum_string;
+}
+std::string Implode_invert (std::vector<string> v_strings, std::string delimetr)
+{
+	int i = 0;
+	vector<string>::iterator string_of_vector;
+	std::string sum_string = "";
+	for (string_of_vector = v_strings.begin(); string_of_vector != v_strings.end(); ++string_of_vector)
+	{
+		if (i > 0)
+			sum_string = *string_of_vector + delimetr + sum_string;
+		else
+			sum_string = *string_of_vector;
 		i++;
 	}
 

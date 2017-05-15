@@ -50,12 +50,27 @@ VirtualFolder* TreeFiles_find_folder (VirtualFolder* VF_dad_folder, std::string 
 
 
 void TreeFiles_add (VirtualFolder* folder, std::string address);
+	VirtualFolder__file* TreeFiles_add__find_dota_file (std::string s_file_name, VirtualFolder* VF_folder);
 	void TreeFiles_add__file_add(std::string s_file_name, VirtualFolder* VF_folder);
 	VirtualFolder* TreeFiles_add__end_vector_of_VF (VirtualFolder* VF_dad_folder);
 	VirtualFolder* TreeFiles_add__create_new_local_VF (VirtualFolder* VF_dad_folder, std::string s_folder_of_address, int level);
 	VirtualFolder* TreeFiles_add__find_dota_folder (VirtualFolder* VF_dad_folder, std::string s_folder_of_address);
 	std::string TreeFiles_add__separation_file (std::string address);
 	vector <string> TreeFiles_add__separation_folder (std::string address);
+
+
+
+int TreeFiles_isset_property_string (VirtualFolder* TF, std::string title);
+int TreeFiles_isset_property_int (VirtualFolder* TF, std::string title);
+// #ИЗМЕНИТЬ СВОЙСТВО string
+void TreeFiles_change_property_string (VirtualFolder* TF, std::string title, std::string property);
+// #ИЗМЕНИТЬ СВОЙСТВО int
+void TreeFiles_change_property_int (VirtualFolder* TF, std::string title, int property);
+// #ПОЛУЧИТЬ СВОЙСТВО string
+std::string TreeFiles_get_property_string (VirtualFolder* TF, std::string title);
+// #ПОЛУЧИТЬ СВОЙСТВО int
+int TreeFiles_get_property_int (VirtualFolder* TF, std::string title);
+
 
 
 std::string TreeFiles_get_address_of_folder (VirtualFolder* VF_current_folder);
