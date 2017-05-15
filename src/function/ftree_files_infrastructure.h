@@ -103,6 +103,7 @@ void TreeFiles_visuale (VirtualFolder* TF);
 
 
 VirtualFolder__file* TreeFiles_pass_files (VirtualFolder* VF_current_folder, std::string label);
+void TreeFiles_pass_files_on_start (VirtualFolder* VF_current_folder, std::string label);
 
 
 

@@ -1,0 +1,6 @@
+*_git_ignore*
+*~*
+*.exe
+*.txt
+*.o
+*.out
