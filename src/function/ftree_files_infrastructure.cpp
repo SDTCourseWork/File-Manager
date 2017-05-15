@@ -339,17 +339,13 @@ std::string TreeFiles_get_address_of_folder (VirtualFolder* VF_current_folder)
 	std::string s_address = "";
 	while (true)
 	{
-
 		if ((VF_current_folder->parent == NULL) || (VF_current_folder == NULL))
 			break;
 
-
 		s_address = VF_current_folder->properties_string["Name"] + "/" + s_address;
-
 
 		if (VF_current_folder->level <= 0)
 			break;
-
 
 		VF_current_folder = VF_current_folder->parent;
 	}
@@ -507,104 +503,6 @@ void TreeFiles_delete__delete_node (VirtualFolder* VF_node)
 
 
 
-
-// #ВИЗУАЛИЗАЦИЯ КАТАЛОГА
-// <	(ДФ)
-// <	адрес каталога
-// >	в консоли выводится дерево файлов
-// ::	
-void TreeFiles_visuale (VirtualFolder* TF)
-{
-	set<string> mandatory_properties; //Свойства которые не выводятся в описании файла
-	mandatory_properties.insert("Name");
-	VirtualFolder* VF_current_folder;
-	while (true)
-	{
-		VF_current_folder = TreeFiles_pass(TF, "visualization");
-		if (VF_current_folder == NULL)
-			break;
-		else
-		{
-			string tabulation = "";
-			for (int i = 0; i < TreeFiles_pass__properties_level(TF, "visualization"); ++i)
-				tabulation += "	";
-
-			TreeFiles_visuale__print_folder(VF_current_folder, mandatory_properties, tabulation); //Печатаем свойства папки и вложенные файлы
-			TreeFiles_visuale__print_files(VF_current_folder, mandatory_properties, tabulation);
-		}
-	}
-}
-void TreeFiles_visuale__print_folder (VirtualFolder* VF_current_folder, set<string> mandatory_properties, string tabulation)
-{ //Печатаем текущую папку и ее свойства
-		cout << tabulation << "'-- " << VF_current_folder->properties_string["Name"];
-		TreeFiles_visuale__print_property_folder__string(VF_current_folder, tabulation, mandatory_properties);
-		TreeFiles_visuale__print_property_folder__int(VF_current_folder, tabulation, mandatory_properties);
-		cout << endl;
-}
-void TreeFiles_visuale__print_files (VirtualFolder* VF_current_folder, set<string> mandatory_properties, string tabulation)
-{ //Печатаем файлы и их свойства
-	vector < VirtualFolder__file* >::iterator Iter_files;
-	for (Iter_files = VF_current_folder->files.begin(); Iter_files != VF_current_folder->files.end(); Iter_files++)
-	{
-		cout << tabulation << "	|-- " << (*Iter_files)->properties_string["Name"] << "	";
-
-		TreeFiles_visuale__print_property_files__string(VF_current_folder, tabulation, mandatory_properties, *Iter_files);
-		TreeFiles_visuale__print_property_files__int(VF_current_folder, tabulation, mandatory_properties, *Iter_files);
-
-		cout << endl;
-	}
-}
-void TreeFiles_visuale__print_property_folder__string (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties)
-{
-	map<string, string>::const_iterator itr_string;
-	vector < map<string, string> >::iterator it_str;
-	for (itr_string = (folder->properties_string).begin(); itr_string != (folder->properties_string).end(); ++itr_string)
-	{
-		if (mandatory_properties.find((*itr_string).first) == mandatory_properties.end()) //Печатаем свойство, если его нет в исключениях
-			cout << " [" << (*itr_string).first << ": " << (*itr_string).second << "]";
-	}
-}
-void TreeFiles_visuale__print_property_folder__int (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties)
-{
-	map<string, int>::const_iterator itr_int;
-	vector < map<string, int> >::iterator it_int;
-	for (itr_int = (folder->properties_int).begin(); itr_int != (folder->properties_int).end(); ++itr_int)
-	{
-		if (mandatory_properties.find((*itr_int).first) == mandatory_properties.end()) //Печатаем свойство, если его нет в исключениях
-			cout << " [" << (*itr_int).first << ": " << (*itr_int).second << "]";
-	}
-}
-void TreeFiles_visuale__print_property_files__string (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties, VirtualFolder__file* VFF_file)
-{
-	map<string, string>::const_iterator itr_string;
-
-	for (itr_string = (VFF_file->properties_string).begin(); itr_string != (VFF_file->properties_string).end(); ++itr_string)
-	{
-		if (mandatory_properties.find((*itr_string).first) == mandatory_properties.end()) //Печатаем свойство, если его нет в исключениях
-			cout << " [" << (*itr_string).first << ": " << (*itr_string).second << "]";
-	}
-}
-void TreeFiles_visuale__print_property_files__int (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties, VirtualFolder__file* VFF_file)
-{
-	map<string, int>::const_iterator itr_int;
-
-	for (itr_int = (VFF_file->properties_int).begin(); itr_int != (VFF_file->properties_int).end(); ++itr_int)
-	{
-		if (mandatory_properties.find((*itr_int).first) == mandatory_properties.end()) //Печатаем свойство, если его нет в исключениях
-			cout << " [" << (*itr_int).first << ": " << (*itr_int).second << "]";
-	}
-}
-
-
-
-
-
-
-
-
-
-
-
 // #ПРОГУЛКА ПО ФАЙЛАМ ПАПКИ
 VirtualFolder__file* TreeFiles_pass_files (VirtualFolder* VF_current_folder, std::string label)
 {//<~
@@ -643,15 +541,18 @@ void TreeFiles_pass_files_on_start (VirtualFolder* VF_current_folder, std::strin
 // <	(ДФ ред)
 // >	(каждый раз выдается файл на обработку)
 // ::	конец каталога
-VirtualFolder* TreeFiles_pass (VirtualFolder* TF, std::string label, std::string address) //<!--~ не используется адресс
+VirtualFolder* TreeFiles_pass (VirtualFolder* TF, std::string label) //<!--~ произойдет ошибка сегментации, если на вход дать не верхушку дерева
 {
 	VirtualFolder* VF_current_folder;
-	if (TF->GLobal_position[label].folder == NULL)
+	cout << typeid(TF).name() << endl;
+	if ((TF->GLobal_position[label]).folder == NULL)
 	{
 		VF_current_folder = TF;
 		if (TF != VF_current_folder)
+		{
 			(TF->GLobal_position[label].folder)->parent->position[label] = -1;
 			TF->GLobal_position[label].level = -1;
+		}
 	}
 	else
 	{
@@ -660,6 +561,8 @@ VirtualFolder* TreeFiles_pass (VirtualFolder* TF, std::string label, std::string
 			(TF->GLobal_position[label].folder)->parent->position[label]++;
 	}
 	int* level = &(TF->GLobal_position[label].level);
+
+
 
 
 	VF_current_folder = TreeFiles_pass__correct_pointer(VF_current_folder, &(*level), label);
@@ -780,4 +683,102 @@ void TESTING_PRINT_ALL_DOTA_FOLDER (VirtualFolder* VF_current_folder, int level)
 	cout << endl;
 	cout << endl;
 	cout << endl;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// #ВИЗУАЛИЗАЦИЯ КАТАЛОГА
+// <	(ДФ)
+// <	адрес каталога
+// >	в консоли выводится дерево файлов
+// ::	
+void TreeFiles_visuale (VirtualFolder* TF)
+{
+	set<string> mandatory_properties; //Свойства которые не выводятся в описании файла
+	mandatory_properties.insert("Name");
+	VirtualFolder* VF_current_folder;
+	while (true)
+	{
+		VF_current_folder = TreeFiles_pass(TF, "visualization");
+		if (VF_current_folder == NULL)
+			break;
+		else
+		{
+			string tabulation = "";
+			for (int i = 0; i < TreeFiles_pass__properties_level(TF, "visualization"); ++i)
+				tabulation += "	";
+
+			TreeFiles_visuale__print_folder(VF_current_folder, mandatory_properties, tabulation); //Печатаем свойства папки и вложенные файлы
+			TreeFiles_visuale__print_files(VF_current_folder, mandatory_properties, tabulation);
+		}
+	}
+}
+void TreeFiles_visuale__print_folder (VirtualFolder* VF_current_folder, set<string> mandatory_properties, string tabulation)
+{ //Печатаем текущую папку и ее свойства
+		cout << tabulation << "'-- " << VF_current_folder->properties_string["Name"];
+		TreeFiles_visuale__print_property_folder__string(VF_current_folder, tabulation, mandatory_properties);
+		TreeFiles_visuale__print_property_folder__int(VF_current_folder, tabulation, mandatory_properties);
+		cout << endl;
+}
+void TreeFiles_visuale__print_files (VirtualFolder* VF_current_folder, set<string> mandatory_properties, string tabulation)
+{ //Печатаем файлы и их свойства
+	vector < VirtualFolder__file* >::iterator Iter_files;
+	for (Iter_files = VF_current_folder->files.begin(); Iter_files != VF_current_folder->files.end(); Iter_files++)
+	{
+		cout << tabulation << "	|-- " << (*Iter_files)->properties_string["Name"] << "	";
+
+		TreeFiles_visuale__print_property_files__string(VF_current_folder, tabulation, mandatory_properties, *Iter_files);
+		TreeFiles_visuale__print_property_files__int(VF_current_folder, tabulation, mandatory_properties, *Iter_files);
+
+		cout << endl;
+	}
+}
+void TreeFiles_visuale__print_property_folder__string (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties)
+{
+	map<string, string>::const_iterator itr_string;
+	vector < map<string, string> >::iterator it_str;
+	for (itr_string = (folder->properties_string).begin(); itr_string != (folder->properties_string).end(); ++itr_string)
+	{
+		if (mandatory_properties.find((*itr_string).first) == mandatory_properties.end()) //Печатаем свойство, если его нет в исключениях
+			cout << " [" << (*itr_string).first << ": " << (*itr_string).second << "]";
+	}
+}
+void TreeFiles_visuale__print_property_folder__int (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties)
+{
+	map<string, int>::const_iterator itr_int;
+	vector < map<string, int> >::iterator it_int;
+	for (itr_int = (folder->properties_int).begin(); itr_int != (folder->properties_int).end(); ++itr_int)
+	{
+		if (mandatory_properties.find((*itr_int).first) == mandatory_properties.end()) //Печатаем свойство, если его нет в исключениях
+			cout << " [" << (*itr_int).first << ": " << (*itr_int).second << "]";
+	}
+}
+void TreeFiles_visuale__print_property_files__string (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties, VirtualFolder__file* VFF_file)
+{
+	map<string, string>::const_iterator itr_string;
+
+	for (itr_string = (VFF_file->properties_string).begin(); itr_string != (VFF_file->properties_string).end(); ++itr_string)
+	{
+		if (mandatory_properties.find((*itr_string).first) == mandatory_properties.end()) //Печатаем свойство, если его нет в исключениях
+			cout << " [" << (*itr_string).first << ": " << (*itr_string).second << "]";
+	}
+}
+void TreeFiles_visuale__print_property_files__int (VirtualFolder* folder, std::string tabulation, set<string> mandatory_properties, VirtualFolder__file* VFF_file)
+{
+	map<string, int>::const_iterator itr_int;
+
+	for (itr_int = (VFF_file->properties_int).begin(); itr_int != (VFF_file->properties_int).end(); ++itr_int)
+	{
+		if (mandatory_properties.find((*itr_int).first) == mandatory_properties.end()) //Печатаем свойство, если его нет в исключениях
+			cout << " [" << (*itr_int).first << ": " << (*itr_int).second << "]";
+	}
 }

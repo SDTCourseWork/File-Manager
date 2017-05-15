@@ -13,7 +13,6 @@ class VirtualFolder__file
 	public:
 		map<string, int> properties_int; // *числовыми свойствами вложенных файлов
 		map<string, string> properties_string; // *строковыми свойствами вложенных файлов
-		// VirtualFolder* parent;
 };
 class VirtualFolder
 {
@@ -107,7 +106,7 @@ void TreeFiles_pass_files_on_start (VirtualFolder* VF_current_folder, std::strin
 
 
 
-VirtualFolder* TreeFiles_pass (VirtualFolder* folder, std::string label, std::string address = "");
+VirtualFolder* TreeFiles_pass (VirtualFolder* folder, std::string label);
 	int TreeFiles_pass__properties_level (VirtualFolder* TF, std::string label);
 
 	VirtualFolder* TreeFiles_pass__correct_pointer (VirtualFolder* VF_current_folder, int* level, std::string label);
