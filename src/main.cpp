@@ -31,17 +31,29 @@ int main()
 	TreeFiles_add(test, "1c/");
 
 	VirtualFolder* test_folder = TreeFiles_find_folder(test, "1a/2a/");
+	VirtualFolder__file* test_file = TreeFiles_find_file(test, "1a/2a/fileone");
 
-cout << "TreeFiles_isset_property_string " << TreeFiles_isset_property_string(test_folder, "Name") << endl;
-cout << "TreeFiles_isset_property_int " << TreeFiles_isset_property_int(test_folder, "Name") << endl;
-// #ИЗМЕНИТЬ СВОЙСТВО string
-TreeFiles_change_property_string(test_folder, "Name", "name38");
-// #ИЗМЕНИТЬ СВОЙСТВО int
-TreeFiles_change_property_int(test_folder, "Name", 38);
-// #ПОЛУЧИТЬ СВОЙСТВО string
-cout << "TreeFiles_get_property_string " << TreeFiles_get_property_string(test_folder, "Name") << endl;
-// #ПОЛУЧИТЬ СВОЙСТВО int
-cout << "TreeFiles_get_property_int " << TreeFiles_get_property_int(test_folder, "Name") << endl;
+cout << "TreeFiles_isset_property_string " << TreeFiles_isset_folder_property_string(test_folder, "Name") << endl;
+cout << "TreeFiles_isset_folder_property_int " << TreeFiles_isset_folder_property_int(test_folder, "Name") << endl;
+TreeFiles_change_folder_property_string(test_folder, "Name", "name38");
+TreeFiles_change_folder_property_int(test_folder, "Name", 38);
+cout << "TreeFiles_get_folder_property_string " << TreeFiles_get_folder_property_string(test_folder, "Name") << endl;
+cout << "TreeFiles_get_folder_property_int " << TreeFiles_get_folder_property_int(test_folder, "Name") << endl;
+
+
+cout << "--------------------------------" << endl;
+cout << endl;
+cout << endl;
+cout << endl;
+cout << endl;
+cout << endl;
+
+cout << "TreeFiles_isset_property_string " << TreeFiles_isset_file_property_string(test_file, "Name") << endl;
+cout << "TreeFiles_isset_file_property_int " << TreeFiles_isset_file_property_int(test_file, "Name") << endl;
+TreeFiles_change_file_property_string(test_file, "Name", "name38");
+TreeFiles_change_file_property_int(test_file, "Name", 38);
+cout << "TreeFiles_get_file_property_string " << TreeFiles_get_file_property_string(test_file, "Name") << endl;
+cout << "TreeFiles_get_file_property_int " << TreeFiles_get_file_property_int(test_file, "Name") << endl;
 
 
 

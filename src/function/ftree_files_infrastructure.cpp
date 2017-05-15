@@ -249,33 +249,75 @@ vector <string> TreeFiles_add__separation_folder (std::string address)
 
 
 // #ПРОВЕРИТЬ НАЛИЧИЕ СВОЙСТВА
-int TreeFiles_isset_property_string (VirtualFolder* TF, std::string title)
+int TreeFiles_isset_folder_property_string (VirtualFolder* TF, std::string title)
 {
 	return (TF->properties_string).find(title) != (TF->properties_string).end();
 }
-int TreeFiles_isset_property_int (VirtualFolder* TF, std::string title)
+int TreeFiles_isset_folder_property_int (VirtualFolder* TF, std::string title)
 {
 	return (TF->properties_int).find(title) != (TF->properties_int).end();
 }
 // #ИЗМЕНИТЬ СВОЙСТВО string
-void TreeFiles_change_property_string (VirtualFolder* TF, std::string title, std::string property)
+void TreeFiles_change_folder_property_string (VirtualFolder* TF, std::string title, std::string property)
 {
 	if (TF != NULL)
 		TF->properties_string[title] = property;
 }
 // #ИЗМЕНИТЬ СВОЙСТВО int
-void TreeFiles_change_property_int (VirtualFolder* TF, std::string title, int property)
+void TreeFiles_change_folder_property_int (VirtualFolder* TF, std::string title, int property)
 {
 	if (TF != NULL)
 		TF->properties_int[title] = property;
 }
 // #ПОЛУЧИТЬ СВОЙСТВО string
-std::string TreeFiles_get_property_string (VirtualFolder* TF, std::string title)
+std::string TreeFiles_get_folder_property_string (VirtualFolder* TF, std::string title)
 {
 	return TF->properties_string[title];
 }
 // #ПОЛУЧИТЬ СВОЙСТВО int
-int TreeFiles_get_property_int (VirtualFolder* TF, std::string title)
+int TreeFiles_get_folder_property_int (VirtualFolder* TF, std::string title)
+{
+	return TF->properties_int[title];
+}
+
+
+
+
+
+
+
+
+
+
+
+// #ПРОВЕРИТЬ НАЛИЧИЕ СВОЙСТВА
+int TreeFiles_isset_file_property_string (VirtualFolder__file* TF, std::string title)
+{
+	return (TF->properties_string).find(title) != (TF->properties_string).end();
+}
+int TreeFiles_isset_file_property_int (VirtualFolder__file* TF, std::string title)
+{
+	return (TF->properties_int).find(title) != (TF->properties_int).end();
+}
+// #ИЗМЕНИТЬ СВОЙСТВО string
+void TreeFiles_change_file_property_string (VirtualFolder__file* TF, std::string title, std::string property)
+{
+	if (TF != NULL)
+		TF->properties_string[title] = property;
+}
+// #ИЗМЕНИТЬ СВОЙСТВО int
+void TreeFiles_change_file_property_int (VirtualFolder__file* TF, std::string title, int property)
+{
+	if (TF != NULL)
+		TF->properties_int[title] = property;
+}
+// #ПОЛУЧИТЬ СВОЙСТВО string
+std::string TreeFiles_get_file_property_string (VirtualFolder__file* TF, std::string title)
+{
+	return TF->properties_string[title];
+}
+// #ПОЛУЧИТЬ СВОЙСТВО int
+int TreeFiles_get_file_property_int (VirtualFolder__file* TF, std::string title)
 {
 	return TF->properties_int[title];
 }
@@ -564,8 +606,28 @@ void TreeFiles_visuale__print_property_files__int (VirtualFolder* folder, std::s
 
 
 // #ПРОГУЛКА ПО ФАЙЛАМ ПАПКИ
-// VirtualFolder__file* TreeFiles_pass_files (VirtualFolder* VF_current_folder, std::)
+VirtualFolder__file* TreeFiles_pass_files (VirtualFolder* VF_current_folder, std::string label)
+{//<~
+	VirtualFolder__file* VFF_result_find = NULL;
+	vector < VirtualFolder__file* >::iterator Iter_files;
+	int i = 0;
+	for (Iter_files = VF_current_folder->files.begin(); Iter_files != VF_current_folder->files.end(); Iter_files++)
+	{
+		if (i == VF_current_folder->position_file[label])
+		{
+			VFF_result_find = (*Iter_files);
+			break;
+		}
+		i++;
+	}
 
+	VF_current_folder->position_file[label]++;
+	return VFF_result_find;
+}
+void TreeFiles_pass_files_on_start (VirtualFolder* VF_current_folder, std::string label)
+{
+	VF_current_folder->position_file[label] = 0;
+}
 
 
 
