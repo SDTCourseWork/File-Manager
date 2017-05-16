@@ -544,7 +544,6 @@ void TreeFiles_pass_files_on_start (VirtualFolder* VF_current_folder, std::strin
 VirtualFolder* TreeFiles_pass (VirtualFolder* TF, std::string label) //<!--~ произойдет ошибка сегментации, если на вход дать не верхушку дерева
 {
 	VirtualFolder* VF_current_folder;
-	cout << typeid(TF).name() << endl;
 	if ((TF->GLobal_position[label]).folder == NULL)
 	{
 		VF_current_folder = TF;
@@ -609,6 +608,9 @@ VirtualFolder* TreeFiles_pass__correct_pointer (VirtualFolder* VF_current_folder
 }
 VirtualFolder* TreeFiles_pass__diving (VirtualFolder* VF_current_folder, std::string label)
 {
+	if (VF_current_folder == NULL)
+		return NULL;
+
 	VirtualFolder* VF_save_dota_folder = NULL;
 	int i = 0;
 
@@ -633,10 +635,19 @@ VirtualFolder* TreeFiles_pass__next_equal_folder (VirtualFolder* VF_current_fold
 
 VirtualFolder* TreeFiles_pass__surfacing (VirtualFolder* VF_current_folder, int* level, std::string label)
 {
+	if (VF_current_folder == NULL)
+		return NULL;
 	VirtualFolder* VF_parent = VF_current_folder->parent;
 	// level--;
 	while (true)
 	{
+		if (((*level) < 1) || (VF_parent == NULL) || (VF_parent->parent == NULL)) //?
+		{
+			VF_parent = NULL; //Конец визуализации
+			break;
+		}
+
+
 		if (VF_parent->parent->position[label] >= VF_parent->parent->v_child_folders.size()) //Если количество обработанных элементов на уровне этого объекта больше или равно количеству элементов
 		{
 			VF_parent = VF_parent->parent; //Всплываем
@@ -646,7 +657,7 @@ VirtualFolder* TreeFiles_pass__surfacing (VirtualFolder* VF_current_folder, int*
 			break; //Необработанный родитель уже найден, поиск окончен
 
 
-		if ((*level) < 1) //?
+		if (((*level) < 1) || (VF_parent == NULL) || (VF_parent->parent == NULL)) //?
 		{
 			VF_parent = NULL; //Конец визуализации
 			break;
