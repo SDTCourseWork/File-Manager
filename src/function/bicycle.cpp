@@ -104,21 +104,3 @@ int std_string_compare (std::string str1, std::string str2)
 			return 0;
 	}
 }
-
-
-
-
-// template<class CharT, class Traits, class Alloc>
-// int basic_string<CharT, Traits, Alloc>::compare(const std::basic_string& str) const noexcept
-// {
-//     size_type lhs_sz = size();
-//     size_type rhs_sz = str.size();
-//     int result = traits_type::compare(data(), str.data(), std::min(lhs_sz, rhs_sz));
-//     if (result != 0)
-//         return result;
-//     if (lhs_sz < rhs_sz)
-//         return -1;
-//     if (lhs_sz > rhs_sz)
-//         return 1;
-//     return 0;
-// }
