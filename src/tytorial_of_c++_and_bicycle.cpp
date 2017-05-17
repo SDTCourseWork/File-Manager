@@ -1,15 +1,18 @@
-#include <iostream>
+#include <iostream> //содержимым файла «iostream.h», который находится в стандартной библиотеке языка и отвечает за ввод и вывод данных на экран.
+#include <cstdlib> //подключает стандартную библиотеку языка С. Это подключение необходимо для работы функции system.
+#include <string>
+#include <vector>
 #include <sstream>
 #include <typeinfo>
-// #include <algorithm>
-#include <vector>
-#include <string>
 #include <map>
-
-using namespace std;
+// #include <algorithm>
+#include <set>
+#include <cstring>
+using namespace std; //указывает на то, что мы используем по умолчанию пространство имен с названием «std»
 
 #include "function/bicycle.cpp"
 #include "function/ftree_files_infrastructure.cpp"
+#include "infrastructure.cpp"
 
 
 int main()

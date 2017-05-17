@@ -3,13 +3,17 @@
 #include <cstdlib> //подключает стандартную библиотеку языка С. Это подключение необходимо для работы функции system.
 #include <string>
 #include <vector>
+#include <sstream>
 #include <typeinfo>
+#include <map>
+// #include <algorithm>
 #include <set>
 #include <cstring>
 using namespace std; //указывает на то, что мы используем по умолчанию пространство имен с названием «std»
 
 #include "bicycle.cpp"
 #include "ftree_files_infrastructure.h"
+#include "infrastructure.cpp"
 
 
 
@@ -22,6 +26,7 @@ VirtualFolder* TreeFiles_create ()
 	folder->properties_string["Name"] = "TF";
 	folder->parent = NULL;
 	folder->level = -1;
+	folder->is_vertex = 1;
 	return folder;
 }
 
@@ -95,18 +100,7 @@ VirtualFolder* TreeFiles_find_folder (VirtualFolder* VF_dad_folder, std::string 
 	{
 		return NULL;
 	}
-	else if (s_file_name == "")
-	{
-		return VF_save_dota_folder;
-	}
-	else
-	{ //<!--~
-		vector < VirtualFolder__file* >::iterator Iter_files;
-		for (Iter_files = VF_save_dota_folder->files.begin(); Iter_files != VF_save_dota_folder->files.end(); Iter_files++)
-		{
-			cout << (*Iter_files)->properties_string["Name"] << endl;
-		}
-	}
+	return VF_save_dota_folder;
 }
 
 
@@ -189,6 +183,7 @@ VirtualFolder* TreeFiles_add__create_new_local_VF (VirtualFolder* VF_dad_folder,
 	VF_new_folder->properties_string["Name"] = s_folder_of_address;
 	VF_new_folder->parent = VF_dad_folder;
 	VF_new_folder->level = level;
+	VF_new_folder->is_vertex = 0;
 
 	return VF_new_folder;
 }
@@ -401,23 +396,11 @@ void TreeFiles_delete (VirtualFolder* TF, std::string address)
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
 VirtualFolder* TreeFiles_delete__passage(VirtualFolder* TF)
 {
 	VirtualFolder* VF_current_folder;
 	if (TF->GLobal_position["visualization"].folder == NULL)
-	{
+	{ //Вставка данных в случае первого прохода
 		VF_current_folder = TF;
 		if (TF != VF_current_folder)
 			(TF->GLobal_position["visualization"].folder)->parent->position["visualization"] = -1;
@@ -442,33 +425,43 @@ VirtualFolder* TreeFiles_delete__passage(VirtualFolder* TF)
 	}
 }
 VirtualFolder* TreeFiles_delete__correct_pointer (VirtualFolder* VF_current_folder, int* level)
-{
-	VirtualFolder* VF_diving = TreeFiles_pass__diving(VF_current_folder, "visualization"); //погружаемся
-	if (VF_diving != NULL)
+{ //Технология возврата элемента для обработки
+	while (true)
 	{
-		VF_current_folder = VF_diving;
-		(*level)++;
-		return VF_current_folder;
+		/*все тут будет крутиться в цикле
+		условия для обработки (выхода)
+			нету дочерних элементов
+		параметры системы
+			при всплытии указатель на родительский элемент*/
+		VirtualFolder* VF_diving = TreeFiles_pass__diving(VF_current_folder, "visualization"); //погружаемся
+		VirtualFolder* VF_next = TreeFiles_pass__next_equal_folder(VF_current_folder, (*level), "visualization"); //Получаем указатель на следующую папку
+		VirtualFolder* VF_surfacing = TreeFiles_pass__surfacing(VF_current_folder, &(*level), "visualization"); //всплываем
+
+
+		if (VF_diving != NULL)
+		{
+			VF_current_folder = VF_diving;
+			(*level)++;
+			return VF_current_folder;
+		}
+
+
+		if (VF_next != NULL)
+		{
+			VF_current_folder = VF_next;
+			return VF_current_folder;
+		}
+
+
+		if ((VF_surfacing != NULL) && (*level) > 0)
+		{
+			(*level)--;
+			VF_current_folder = TreeFiles_pass__next_equal_folder(VF_surfacing, (*level), "visualization");
+			return VF_current_folder;
+		}
+		else
+			return NULL;
 	}
-
-
-	VirtualFolder* VF_next = TreeFiles_pass__next_equal_folder(VF_current_folder, (*level), "visualization"); //Получаем указатель на следующую папку
-	if (VF_next != NULL)
-	{
-		VF_current_folder = VF_next;
-		return VF_current_folder;
-	}
-
-
-	VirtualFolder* VF_surfacing = TreeFiles_pass__surfacing(VF_current_folder, &(*level), "visualization"); //всплываем
-	if ((VF_surfacing != NULL) && (*level) > 0)
-	{
-		(*level)--;
-		VF_current_folder = TreeFiles_pass__next_equal_folder(VF_surfacing, (*level), "visualization");
-		return VF_current_folder;
-	}
-	else
-		return NULL;
 }
 void TreeFiles_delete__delete_node (VirtualFolder* VF_node)
 {
@@ -541,11 +534,18 @@ void TreeFiles_pass_files_on_start (VirtualFolder* VF_current_folder, std::strin
 // <	(ДФ ред)
 // >	(каждый раз выдается файл на обработку)
 // ::	конец каталога
-VirtualFolder* TreeFiles_pass (VirtualFolder* TF, std::string label) //<!--~ произойдет ошибка сегментации, если на вход дать не верхушку дерева
+VirtualFolder* TreeFiles_pass (VirtualFolder* TF, std::string label) //<!--+~ (вроде решил) произойдет ошибка сегментации, если на вход дать не верхушку дерева
 {
+	if (TF->is_vertex == 0)
+	{
+		Error_print("This is not the tip of a tree");
+		return NULL;
+	}
+
+
 	VirtualFolder* VF_current_folder;
 	if ((TF->GLobal_position[label]).folder == NULL)
-	{
+	{ //вставляем данные в случае первой обработки
 		VF_current_folder = TF;
 		if (TF != VF_current_folder)
 		{
@@ -554,7 +554,7 @@ VirtualFolder* TreeFiles_pass (VirtualFolder* TF, std::string label) //<!--~ п�
 		}
 	}
 	else
-	{
+	{ //элемент обработан, постановка этого событя на учет
 		VF_current_folder = TF->GLobal_position[label].folder;
 		if (TF != VF_current_folder)
 			(TF->GLobal_position[label].folder)->parent->position[label]++;

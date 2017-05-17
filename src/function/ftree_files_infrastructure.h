@@ -2,9 +2,7 @@
 #define FTREE_FILES_INFRASTRUCTURE_H_INCLUDED
 
 #pragma once /* Защита от двойного подключения заголовочного файла */
-#include <string>
-#include <map>
-#include <vector>
+
 
 
 
@@ -39,6 +37,7 @@ class VirtualFolder
 
 		vector < VirtualFolder__file* > files;
 		map < string, VirtualFolder__global_position > GLobal_position;
+		int is_vertex;
 
 
 		
@@ -122,4 +121,4 @@ VirtualFolder* TreeFiles_pass (VirtualFolder* folder, std::string label);
 
 void TESTING_PRINT_ALL_DOTA_FOLDER (VirtualFolder* VF_current_folder, int level);
 
-#endif // TEACHER_H_INCLUDED
+#endif
