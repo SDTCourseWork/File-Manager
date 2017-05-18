@@ -81,9 +81,9 @@ int TreeFiles_get_file_property_int (VirtualFolder__file* TF, std::string title)
 std::string TreeFiles_get_address_of_folder (VirtualFolder* VF_current_folder);
 
 
-void TreeFiles_delete (VirtualFolder* VF_folder, std::string address);
-VirtualFolder* TreeFiles_delete__passage(VirtualFolder* VF_current_folder);
-VirtualFolder* TreeFiles_delete__correct_pointer (VirtualFolder* VF_current_folder, int *level);
+void TreeFiles_delete (VirtualFolder* VF_input_folder, std::string address);
+int find_number_dota_folder (VirtualFolder* VF_folder, std::string name_folder);
+int find_number_dota_file (VirtualFolder* VF_folder, std::string name_files);
 void TreeFiles_delete__delete_node (VirtualFolder* VF_node);
 
 

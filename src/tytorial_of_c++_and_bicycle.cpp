@@ -12,7 +12,7 @@ using namespace std; //указывает на то, что мы использ�
 
 #include "function/bicycle.cpp"
 #include "function/ftree_files_infrastructure.cpp"
-#include "infrastructure.cpp"
+#include "function/infrastructure.cpp"
 
 
 int main()

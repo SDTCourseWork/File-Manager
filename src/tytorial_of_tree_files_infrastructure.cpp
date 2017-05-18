@@ -10,13 +10,15 @@ using namespace std;
 
 #include "function/bicycle.cpp"
 #include "function/ftree_files_infrastructure.cpp"
-#include "infrastructure.cpp"
+#include "function/infrastructure.cpp"
 
 
 
 int main()
 {
-	
+
+
+
 cout << endl << endl << endl << endl << endl << endl;
 cout << "DEMONSTRATION: create and visualization" << endl;
 
@@ -34,13 +36,15 @@ TreeFiles_add(указатель на дерево файлов, строка в
 	TreeFiles_add(test, "1a/2a/filetwo.jpg");  //создается файл filetwo.jpg
 	TreeFiles_add(test, "1c/");
 
+	TreeFiles_delete(test, "1a/");
 	TreeFiles_visuale(test); //визуализируем то, что надобавляли, для отладки функция
 
 
 
 
 
-
+cout << endl << endl << endl << endl << endl << endl;
+cout << "DEMONSTRATION: delete" << endl;
 
 
 
@@ -73,7 +77,7 @@ TreeFiles_change_file_property_int(test_file, "hash", 77777);
 	VirtualFolder* test_folder = TreeFiles_find_folder(test, "1a/2a/"); //получаем указатель на папку 2a
 	VirtualFolder__file* test_file = TreeFiles_find_file(test, "1a/2a/fileone"); //получаем указатель на файл fileone
 
-
+	cout << (test_folder == NULL) << endl;
 	cout << "TreeFiles_isset_folder_property_string " 
 		<< TreeFiles_isset_folder_property_string(test_folder, "Name_tytorial_of_test_folder") << endl; //Проверяем наличие строковое свойства у файла
 	cout << "TreeFiles_isset_folder_property_int " 

@@ -51,7 +51,10 @@ VirtualFolder__file* TreeFiles_find_file (VirtualFolder* VF_dad_folder, std::str
 	std::string s_address_of_current_folder = Implode (v_folders_of_address, "/") + "/";
 	VirtualFolder* VF_current_folder = TreeFiles_find_folder(VF_dad_folder, s_address_of_current_folder);
 
-	return  TreeFiles_add__find_dota_file(s_file_name, VF_current_folder);
+	if (VF_current_folder != NULL)
+		return TreeFiles_add__find_dota_file(s_file_name, VF_current_folder);
+	else
+		return NULL;
 }
 
 
@@ -68,7 +71,7 @@ VirtualFolder__file* TreeFiles_find_file (VirtualFolder* VF_dad_folder, std::str
 // #ПОИСК НАЛИЧИЯ КАТАЛОГА
 // <	местоназначение каталога
 // >	(ДФ ред)
-VirtualFolder* TreeFiles_find_folder (VirtualFolder* VF_dad_folder, std::string address) //? вернуть объект файл
+VirtualFolder* TreeFiles_find_folder (VirtualFolder* VF_dad_folder, std::string address)
 {
 	replace(address, "\\", "/");
 
@@ -148,7 +151,11 @@ void TreeFiles_add (VirtualFolder* VF_dad_folder, std::string address)
 		TreeFiles_add__file_add(s_file_name, VF_dad_folder);
 }
 VirtualFolder__file* TreeFiles_add__find_dota_file (std::string s_file_name, VirtualFolder* VF_folder)
-{ //<!--~ поиск не работает
+{
+	if (VF_folder == NULL)
+		return NULL;
+
+
 	vector < VirtualFolder__file* >::iterator Iter_files;
 	VirtualFolder__file* VFF_dota_file = NULL;
 	int isset_dota_file = 0;
@@ -246,33 +253,65 @@ vector <string> TreeFiles_add__separation_folder (std::string address)
 // #ПРОВЕРИТЬ НАЛИЧИЕ СВОЙСТВА
 int TreeFiles_isset_folder_property_string (VirtualFolder* TF, std::string title)
 {
+	if (TF == NULL)
+	{
+		Error_print("NULL, no proreties");
+		return 0;
+	}
 	return (TF->properties_string).find(title) != (TF->properties_string).end();
 }
 int TreeFiles_isset_folder_property_int (VirtualFolder* TF, std::string title)
 {
-	return (TF->properties_int).find(title) != (TF->properties_int).end();
+	if (TF == NULL)
+	{
+		Error_print("NULL, no proreties");
+		return 0;
+	}
+	else
+		return (TF->properties_int).find(title) != (TF->properties_int).end();
 }
 // #ИЗМЕНИТЬ СВОЙСТВО string
 void TreeFiles_change_folder_property_string (VirtualFolder* TF, std::string title, std::string property)
 {
-	if (TF != NULL)
+	if (TF == NULL)
+	{
+		Error_print("NULL, no proreties");
+	}
+	else
 		TF->properties_string[title] = property;
 }
 // #ИЗМЕНИТЬ СВОЙСТВО int
 void TreeFiles_change_folder_property_int (VirtualFolder* TF, std::string title, int property)
 {
-	if (TF != NULL)
+	if (TF == NULL)
+	{
+		Error_print("NULL, no proreties");
+	}
+	else
 		TF->properties_int[title] = property;
 }
 // #ПОЛУЧИТЬ СВОЙСТВО string
 std::string TreeFiles_get_folder_property_string (VirtualFolder* TF, std::string title)
 {
-	return TF->properties_string[title];
+
+	if (TF == NULL)
+	{
+		Error_print("NULL, no proreties");
+		return "";
+	}
+	else
+		return TF->properties_string[title];
 }
 // #ПОЛУЧИТЬ СВОЙСТВО int
 int TreeFiles_get_folder_property_int (VirtualFolder* TF, std::string title)
 {
-	return TF->properties_int[title];
+	if (TF == NULL)
+	{
+		Error_print("NULL, no proreties");
+		return 0;
+	}
+	else
+		return TF->properties_int[title];
 }
 
 
@@ -288,33 +327,65 @@ int TreeFiles_get_folder_property_int (VirtualFolder* TF, std::string title)
 // #ПРОВЕРИТЬ НАЛИЧИЕ СВОЙСТВА
 int TreeFiles_isset_file_property_string (VirtualFolder__file* TF, std::string title)
 {
-	return (TF->properties_string).find(title) != (TF->properties_string).end();
+	if (TF == NULL)
+	{
+		Error_print("NULL, no proreties");
+		return 0;
+	}
+	else
+		return (TF->properties_string).find(title) != (TF->properties_string).end();
 }
 int TreeFiles_isset_file_property_int (VirtualFolder__file* TF, std::string title)
 {
-	return (TF->properties_int).find(title) != (TF->properties_int).end();
+	if (TF == NULL)
+	{
+		Error_print("NULL, no proreties");
+		return 0;
+	}
+	else
+		return (TF->properties_int).find(title) != (TF->properties_int).end();
 }
 // #ИЗМЕНИТЬ СВОЙСТВО string
 void TreeFiles_change_file_property_string (VirtualFolder__file* TF, std::string title, std::string property)
 {
-	if (TF != NULL)
+	if (TF == NULL)
+	{
+		Error_print("NULL, no proreties");
+	}
+	else
 		TF->properties_string[title] = property;
 }
 // #ИЗМЕНИТЬ СВОЙСТВО int
 void TreeFiles_change_file_property_int (VirtualFolder__file* TF, std::string title, int property)
 {
-	if (TF != NULL)
+	if (TF == NULL)
+	{
+		Error_print("NULL, no proreties");
+	}
+	else
 		TF->properties_int[title] = property;
 }
 // #ПОЛУЧИТЬ СВОЙСТВО string
 std::string TreeFiles_get_file_property_string (VirtualFolder__file* TF, std::string title)
 {
-	return TF->properties_string[title];
+	if (TF == NULL)
+	{
+		Error_print("NULL, no proreties");
+		return "";
+	}
+	else
+		return TF->properties_string[title];
 }
 // #ПОЛУЧИТЬ СВОЙСТВО int
 int TreeFiles_get_file_property_int (VirtualFolder__file* TF, std::string title)
 {
-	return TF->properties_int[title];
+	if (TF == NULL)
+	{
+		Error_print("NULL, no proreties");
+		return 0;
+	}
+	else
+		return TF->properties_int[title];
 }
 
 
@@ -365,107 +436,127 @@ std::string TreeFiles_get_address_of_folder (VirtualFolder* VF_current_folder)
 // ::	удаляемый каталог не найден
 void TreeFiles_delete (VirtualFolder* TF, std::string address)
 { //<!--~ настоящий код ниже закомментен
-/*	while (true)
+
+	std::string s_file_name = TreeFiles_add__separation_file(address);
+	vector <string> v_folders_of_address = TreeFiles_add__separation_folder(address);
+	std::string s_address_folder = Implode(v_folders_of_address, "/") + "/";
+	VirtualFolder* VF_current_folder = TreeFiles_find_folder(TF, s_address_folder);
+	if (VF_current_folder != NULL)
 	{
-		VF_folder = TreeFiles_delete__passage(VF_folder);
-		if (VF_folder == NULL)
-			break;
+		if (s_file_name == "")
+		{ //Удаление папки дочерней
+			int number_dota_folder = find_number_dota_folder(VF_current_folder->parent, v_folders_of_address.back());
+			cout << "id616: " << VF_current_folder->parent->v_child_folders.size() 
+			<< "ndf: " << number_dota_folder << endl;
+			if (number_dota_folder >= 0)
+				VF_current_folder->parent->v_child_folders.erase(VF_current_folder->parent->v_child_folders.begin() + number_dota_folder);
+		}
 		else
 		{
-			TreeFiles_delete__delete_node(VF_parent);
-		}
-	}*/
-
-
-	set<string> mandatory_properties; //Свойства которые не выводятся в описании файла
-	mandatory_properties.insert("Name");
-	VirtualFolder* VF_current_folder;
+			int number_dota_file = find_number_dota_file(VF_current_folder, s_file_name);
+			if (number_dota_file >= 0)
+				VF_current_folder->files.erase(VF_current_folder->files.begin() + number_dota_file);
+		
+}	}
+/*версия без утечки памяти*/
+/*	int level = 0;
+	int i = 0;
 	while (true)
 	{
-		VF_current_folder = TreeFiles_delete__passage(TF);
-		if (VF_current_folder == NULL)
-			break;
-		else
-		{
-			string tabulation = "";
-			for (int i = 0; i < TreeFiles_pass__properties_level(TF, "visualization"); ++i)
-				tabulation += "	";
-
-			TreeFiles_visuale__print_folder(VF_current_folder, mandatory_properties, tabulation); //Печатаем свойства папки и вложенные файлы
-			TreeFiles_visuale__print_files(VF_current_folder, mandatory_properties, tabulation);
-		}
-	}
-}
-VirtualFolder* TreeFiles_delete__passage(VirtualFolder* TF)
-{
-	VirtualFolder* VF_current_folder;
-	if (TF->GLobal_position["visualization"].folder == NULL)
-	{ //Вставка данных в случае первого прохода
-		VF_current_folder = TF;
-		if (TF != VF_current_folder)
-			(TF->GLobal_position["visualization"].folder)->parent->position["visualization"] = -1;
-			TF->GLobal_position["visualization"].level = -1;
-	}
-	else
-	{
-		VF_current_folder = TF->GLobal_position["visualization"].folder;
-		if (TF != VF_current_folder)
-			(TF->GLobal_position["visualization"].folder)->parent->position["visualization"]++;
-	}
-	int* level = &(TF->GLobal_position["visualization"].level);
-
-
-	VF_current_folder = TreeFiles_delete__correct_pointer(VF_current_folder, &(*level));
-	if (VF_current_folder == NULL)
-		return NULL; //Визуализация окончена
-	else
-	{
-		TF->GLobal_position["visualization"].folder = VF_current_folder;
-		return VF_current_folder;
-	}
-}
-VirtualFolder* TreeFiles_delete__correct_pointer (VirtualFolder* VF_current_folder, int* level)
-{ //Технология возврата элемента для обработки
-	while (true)
-	{
-		/*все тут будет крутиться в цикле
-		условия для обработки (выхода)
-			нету дочерних элементов
-		параметры системы
-			при всплытии указатель на родительский элемент*/
-		VirtualFolder* VF_diving = TreeFiles_pass__diving(VF_current_folder, "visualization"); //погружаемся
-		VirtualFolder* VF_next = TreeFiles_pass__next_equal_folder(VF_current_folder, (*level), "visualization"); //Получаем указатель на следующую папку
-		VirtualFolder* VF_surfacing = TreeFiles_pass__surfacing(VF_current_folder, &(*level), "visualization"); //всплываем
-
-
+		VirtualFolder* VF_diving = TreeFiles_pass__diving(VF_current_folder, "delete"); //погружаемся
 		if (VF_diving != NULL)
 		{
 			VF_current_folder = VF_diving;
-			(*level)++;
-			return VF_current_folder;
+			level++;
+			continue;
 		}
 
-
+		VirtualFolder* VF_next = TreeFiles_pass__next_equal_folder(VF_current_folder, level, "delete"); //Получаем указатель на следующую папку
 		if (VF_next != NULL)
 		{
 			VF_current_folder = VF_next;
-			return VF_current_folder;
+
+			// cout << "input " << VF_current_folder->properties_string["Name"] << endl; //L
+			TreeFiles_delete__delete_node(VF_next);
+			VF_next->parent->position["delete"]++;
+			continue;
 		}
 
 
-		if ((VF_surfacing != NULL) && (*level) > 0)
+		VirtualFolder* VF_surfacing = TreeFiles_pass__surfacing(VF_current_folder, &level, "delete"); //всплываем
+		if ((VF_surfacing != NULL) && level > 0)
 		{
-			(*level)--;
-			VF_current_folder = TreeFiles_pass__next_equal_folder(VF_surfacing, (*level), "visualization");
-			return VF_current_folder;
+			VF_current_folder = VF_surfacing;
+			level--;
 		}
 		else
-			return NULL;
+			break; //Удаление окончено
+	}*/
+}
+int find_number_dota_folder (VirtualFolder* VF_folder, std::string name_folder)
+{
+	int save_increment = -1;
+	int i = 0;
+	for (auto VF_Iter_folder : VF_folder->v_child_folders)
+	{
+		if (std_string_compare(name_folder, VF_Iter_folder->properties_string["Name"]) == 0)
+		{ //Погружаемся, если нашлась дочерняя папка с подходящим названием
+			save_increment = i;
+			break;
+		}
+		i++;
 	}
+	return save_increment;
+}
+int find_number_dota_file (VirtualFolder* VF_folder, std::string name_files)
+{
+	vector < VirtualFolder__file* >::iterator Iter_files;
+	int save_increment = -1;
+	int i = 0;
+	for (Iter_files = VF_folder->files.begin(); Iter_files != VF_folder->files.end(); Iter_files++)
+	{
+		if (std_string_compare(name_files, (*Iter_files)->properties_string["Name"]) == 0)
+		{
+			save_increment = i;
+			break; //файл найден, Поиск окончен
+		}
+		i++;
+	}
+
+	return save_increment;
 }
 void TreeFiles_delete__delete_node (VirtualFolder* VF_node)
 {
 
+
+
+	/*версия без утечки памяти*/
+	// vector < VirtualFolder__file* > files; /*УДАЛЕНИЕ*/
+	// vector < VirtualFolder__file* >::iterator VF_Iter__file;
+	// for (VF_Iter__file = VF_node->files.begin(); VF_Iter__file != VF_node->files.end(); VF_Iter__file++)
+	// // for (int i = 0; i < VF_node->files.size(); ++i)
+	// {
+	// 	// delete VF_node->files[i];
+	// 	delete *VF_Iter__file;
+	// }
+
+
+
+
+	// delete VF_node;
+	// vector < VirtualFolder* > v_child_folders; /*предпологается, что этого нет*/
+	// VirtualFolder *parent; /*нельзя удалять*/
+	
+	
+
+	/*очиститься как память в стеке или кучек, короче очитститься когда будем удалять непосредственно переданный указатель*/
+	// map <string, int> position; // *динамический массив с указателями на описание положения для каждой метки
+	// map <string, int> position_file; // *динамический массив с указателями на описание положения для каждой метки
+	// map <string, int> properties_int; // *указатель на массив с числовыми свойствами свойствами папки
+	// map <string, string> properties_string; // *указатель на массив с строковыми свойствами свойствами папки
+	// int level;
+	// map < string, VirtualFolder__global_position > GLobal_position;
+	// int is_vertex;
 }
 
 
@@ -499,6 +590,10 @@ void TreeFiles_delete__delete_node (VirtualFolder* VF_node)
 // #ПРОГУЛКА ПО ФАЙЛАМ ПАПКИ
 VirtualFolder__file* TreeFiles_pass_files (VirtualFolder* VF_current_folder, std::string label)
 {//<~
+	if (VF_current_folder == NULL)
+		return NULL;
+
+
 	VirtualFolder__file* VFF_result_find = NULL;
 	vector < VirtualFolder__file* >::iterator Iter_files;
 	int i = 0;
@@ -517,7 +612,8 @@ VirtualFolder__file* TreeFiles_pass_files (VirtualFolder* VF_current_folder, std
 }
 void TreeFiles_pass_files_on_start (VirtualFolder* VF_current_folder, std::string label)
 {
-	VF_current_folder->position_file[label] = 0;
+	if (VF_current_folder != NULL)
+		VF_current_folder->position_file[label] = 0;
 }
 
 
@@ -599,7 +695,7 @@ VirtualFolder* TreeFiles_pass__correct_pointer (VirtualFolder* VF_current_folder
 	VirtualFolder* VF_surfacing = TreeFiles_pass__surfacing(VF_current_folder, &(*level), label); //всплываем
 	if ((VF_surfacing != NULL) && (*level) > 0)
 	{
-		(*level)--;
+		(*level)--; //<!--~~~~~~~ КАК ЭТО БЛЯТЬ РАБОТАЕТ????, я второй раз уменьшаю уровень, первый раз по указателю
 		VF_current_folder = TreeFiles_pass__next_equal_folder(VF_surfacing, (*level), label);
 		return VF_current_folder;
 	}
