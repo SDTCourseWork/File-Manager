@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <time.h>
 
 #include "bicycle.h"
 
@@ -103,4 +104,12 @@ int std_string_compare (std::string str1, std::string str2)
 		else
 			return 0;
 	}
+}
+
+std::string create_rand_string (int length) {
+	string  s = "";
+	for(int i = 0; i < length; ++i)
+		s += 'a' + rand() % 26;
+
+	return s;
 }

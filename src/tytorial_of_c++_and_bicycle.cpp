@@ -5,6 +5,7 @@
 #include <sstream>
 #include <typeinfo>
 #include <map>
+#include <time.h>
 // #include <algorithm>
 #include <set>
 #include <cstring>
@@ -113,9 +114,10 @@ cout	<< "1-2 " << std_string_compare(compare_str1, compare_str2) <<	"	1 < 2"	<< 
 
 
 
-
-
-
+cout << endl << endl << endl << endl << endl << endl;
+cout << "DEMONSTRATION:  create_rand_string" << endl;
+srand(time(NULL)); //Меняем базу, внутри функции это не делается, это нужно, чтобы каждый раз числа были рандомные
+cout << create_rand_string(5) << endl;
 
 
 

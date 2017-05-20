@@ -9,6 +9,7 @@
 // #include <algorithm>
 #include <set>
 #include <cstring>
+#include <time.h>
 using namespace std; //указывает на то, что мы используем по умолчанию пространство имен с названием «std»
 
 #include "bicycle.cpp"
@@ -899,19 +900,23 @@ void TreeFiles_visuale (VirtualFolder* TF)
 		return ;
 	}
 
+	int rand_base_no_inicialization;
+	srand(rand_base_no_inicialization); //Меняем базу, внутри функции это не делается, это нужно, чтобы каждый раз числа были рандомные
+	std::string visualization_label = create_rand_string(10);
+
 
 	set<string> mandatory_properties; //Свойства которые не выводятся в описании файла
 	mandatory_properties.insert("Name");
 	VirtualFolder* VF_current_folder;
 	while (true)
 	{
-		VF_current_folder = TreeFiles_pass(TF, "visualization");
+		VF_current_folder = TreeFiles_pass(TF, visualization_label);
 		if (VF_current_folder == NULL)
 			break;
 		else
 		{
 			string tabulation = "";
-			for (int i = 0; i < TreeFiles_pass__properties_level(TF, "visualization"); ++i)
+			for (int i = 0; i < TreeFiles_pass__properties_level(TF, visualization_label); ++i)
 				tabulation += "	";
 
 			TreeFiles_visuale__print_folder(VF_current_folder, mandatory_properties, tabulation); //Печатаем свойства папки и вложенные файлы
