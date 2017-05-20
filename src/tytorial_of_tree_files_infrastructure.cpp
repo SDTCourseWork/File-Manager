@@ -31,6 +31,8 @@ TreeFiles_add(указатель на дерево файлов, строка в
 */
 	VirtualFolder* test = TreeFiles_create();
 	TreeFiles_add(test, "1a/"); //создается папка 1a
+	TreeFiles_add(test, "1a/2a/3a/"); //создается папка 2a внутри папки 1a
+	TreeFiles_add(test, "1a/2a/3b/"); //создается папка 2a внутри папки 1a
 	TreeFiles_add(test, "1a/2a/"); //создается папка 2a внутри папки 1a
 	TreeFiles_add(test, "1a/2a/fileone"); //создается файл fileone
 	TreeFiles_add(test, "1a/2a/filetwo.jpg");  //создается файл filetwo.jpg
@@ -44,16 +46,15 @@ TreeFiles_add(указатель на дерево файлов, строка в
 
 cout << endl << endl << endl << endl << endl << endl;
 cout << "DEMONSTRATION: delete" << endl;
-	TreeFiles_delete(test, "1a/");
+	TreeFiles_delete(test, "1a/2a/fileone");
 	TreeFiles_visuale(test); //визуализируем то, что надобавляли, для отладки функция
 
 
 
 
 
-
 cout << endl << endl << endl << endl << endl << endl;
-cout << "DEMONSTRATION: propreties of folder" << endl;
+cout << "DEMONSTRATION: properties of folder" << endl;
 /*
 Функция поиска папки или файла возвращает указатель на файл, по которому можно
 	узнать о наличии свойства
@@ -97,7 +98,7 @@ TreeFiles_change_file_property_int(test_file, "hash", 77777);
 		<< TreeFiles_get_folder_property_int(test_folder, "Name_tytorial_of_test_folder") << endl; //получить числовое свойство
 
 cout << endl << endl << endl << endl << endl << endl;
-cout << "DEMONSTRATION: propreties of file" << endl;
+cout << "DEMONSTRATION: properties of file" << endl;
 
 	cout << "TreeFiles_isset_file_property_string " 
 		<< TreeFiles_isset_file_property_string(test_file, "Name_tytorial_of_test_file") << endl;

@@ -90,7 +90,7 @@ VirtualFolder* TreeFiles_find_folder (VirtualFolder* VF_dad_folder, std::string 
 
 
 
-	VirtualFolder* VF_save_dota_folder;
+	VirtualFolder* VF_save_dota_folder = NULL;
 	int result_find = 0;
 	for (auto s_folder_of_address : v_folders_of_address)
 	{
@@ -144,7 +144,6 @@ void TreeFiles_add (VirtualFolder* VF_dad_folder, std::string address)
 	int level = 0;
 
 
-	VirtualFolder* VF_save_dota_folder;
 	for (auto s_folder_of_address : v_folders_of_address)
 	{
 		VirtualFolder* VF_save_dota_folder = TreeFiles_add__find_dota_folder(VF_dad_folder, s_folder_of_address);
@@ -464,14 +463,15 @@ std::string TreeFiles_get_address_of_folder (VirtualFolder* VF_current_folder)
 // >	(ДФ ред)
 // ::	удаляемый каталог не найден
 void TreeFiles_delete (VirtualFolder* TF, std::string address)
-{ //<!--~ настоящий код ниже закомментен
-
+{
 	if (TF == NULL)
 	{
 		Error_print("NULL, no proreties");
 		return ;
 	}
 
+
+	//Удаление из векторов
 	std::string s_file_name = TreeFiles_add__separation_file(address);
 	vector <string> v_folders_of_address = TreeFiles_add__separation_folder(address);
 	std::string s_address_folder = Implode(v_folders_of_address, "/") + "/";
@@ -479,55 +479,25 @@ void TreeFiles_delete (VirtualFolder* TF, std::string address)
 	if (VF_current_folder != NULL)
 	{
 		if (s_file_name == "")
-		{ //Удаление папки дочерней
+		{ //Удаление папки дочерней и всех ее дочерних папок
 			int number_dota_folder = find_number_dota_folder(VF_current_folder->parent, v_folders_of_address.back());
 			if (number_dota_folder >= 0)
+			{
 				VF_current_folder->parent->v_child_folders.erase(VF_current_folder->parent->v_child_folders.begin() + number_dota_folder);
+				TreeFiles_delete__clear_memory_for_folder(VF_current_folder);
+			}
 		}
 		else
-		{
+		{ //Удаление файла
 			int number_dota_file = find_number_dota_file(VF_current_folder, s_file_name);
 			if (number_dota_file >= 0)
+			{
+				TreeFiles_delete__clear_memory_for_file(VF_current_folder, number_dota_file);
+				// VF_current_folder->files.erase(pointer_dota_file(VF_current_folder, s_file_name));
 				VF_current_folder->files.erase(VF_current_folder->files.begin() + number_dota_file);
-		
+			}
 		}	
 	}
-
-
-/*версия без утечки памяти*/
-/*	int level = 0;
-	int i = 0;
-	while (true)
-	{
-		VirtualFolder* VF_diving = TreeFiles_pass__diving(VF_current_folder, "delete"); //погружаемся
-		if (VF_diving != NULL)
-		{
-			VF_current_folder = VF_diving;
-			level++;
-			continue;
-		}
-
-		VirtualFolder* VF_next = TreeFiles_pass__next_equal_folder(VF_current_folder, level, "delete"); //Получаем указатель на следующую папку
-		if (VF_next != NULL)
-		{
-			VF_current_folder = VF_next;
-
-			// cout << "input " << VF_current_folder->properties_string["Name"] << endl; //L
-			TreeFiles_delete__delete_node(VF_next);
-			VF_next->parent->position["delete"]++;
-			continue;
-		}
-
-
-		VirtualFolder* VF_surfacing = TreeFiles_pass__surfacing(VF_current_folder, &level, "delete"); //всплываем
-		if ((VF_surfacing != NULL) && level > 0)
-		{
-			VF_current_folder = VF_surfacing;
-			level--;
-		}
-		else
-			break; //Удаление окончено
-	}*/
 }
 int find_number_dota_folder (VirtualFolder* VF_folder, std::string name_folder)
 {
@@ -569,32 +539,75 @@ int find_number_dota_file (VirtualFolder* VF_folder, std::string name_files)
 
 	return save_increment;
 }
+void TreeFiles_delete__clear_memory_for_folder (VirtualFolder* VF_current_folder)
+{ //Фактическое удаеление из кучи
+	int level = 0;
+	int i = 0;
+	VirtualFolder* VF_copy_save_data = new VirtualFolder;
+	while (true)
+	{ //Особый проход по файлам, обработка только безочерних (обработка листьев)
+		VirtualFolder* VF_diving = TreeFiles_pass__diving(VF_current_folder, "delete"); //погружаемся
+		if (VF_diving != NULL)
+		{
+			VF_current_folder = VF_diving;
+			level++;
+			continue;
+		}
+
+		VirtualFolder* VF_next = TreeFiles_pass__next_equal_folder(VF_current_folder, level, "delete"); //Получаем указатель на следующую папку
+		if (VF_next != NULL)
+		{
+			VF_current_folder = VF_next;
+
+			// cout << "input " << VF_current_folder->properties_string["Name"] << endl; //DD
+			VF_copy_save_data->parent = VF_next->parent;
+			TreeFiles_delete__delete_node(VF_next);
+			VF_current_folder = VF_copy_save_data; //
+			VF_current_folder->parent->position["delete"]++;
+			continue;
+		}
+
+
+		VirtualFolder* VF_surfacing = TreeFiles_pass__surfacing(VF_current_folder, &level, "delete"); //всплываем
+
+		if (level <= 1) //ограничитель, чтобы мы не удалили всё, а только детей переданной папки
+			break; //Удаление окончено
+
+		if ((VF_surfacing != NULL))
+		{
+			VF_current_folder = VF_surfacing;
+			level--;
+		}
+		else
+			break; //Удаление окончено
+	}
+	delete VF_copy_save_data;
+}
 void TreeFiles_delete__delete_node (VirtualFolder* VF_node)
 {
 	if (VF_node == NULL)
 		return ;
 
 
-	/*версия без утечки памяти*/
-	// vector < VirtualFolder__file* > files; /*УДАЛЕНИЕ*/
-	// vector < VirtualFolder__file* >::iterator VF_Iter__file;
-	// for (VF_Iter__file = VF_node->files.begin(); VF_Iter__file != VF_node->files.end(); VF_Iter__file++)
-	// // for (int i = 0; i < VF_node->files.size(); ++i)
-	// {
-	// 	// delete VF_node->files[i];
-	// 	delete *VF_Iter__file;
-	// }
+	// vector < VirtualFolder__file* > files; /*УДАЛЕНИЕ ВЛОЖЕННЫХ ФАЙЛОВ*/
+	vector < VirtualFolder__file* >::iterator VF_Iter__file;
+	for (VF_Iter__file = VF_node->files.begin(); VF_Iter__file != VF_node->files.end(); VF_Iter__file++)
+	{
+		delete *VF_Iter__file; //Удаляем структуру по указателю
+	}
+
+
+	delete VF_node;
 
 
 
 
-	// delete VF_node;
 	// vector < VirtualFolder* > v_child_folders; /*предпологается, что этого нет*/
 	// VirtualFolder *parent; /*нельзя удалять*/
 	
 	
 
-	/*очиститься как память в стеке или кучек, короче очитститься когда будем удалять непосредственно переданный указатель*/
+	/*очиститься (лось) как память в стеке или кучек, короче очитститься когда будем удалять непосредственно переданный указатель (delete VF_node)*/
 	// map <string, int> position; // *динамический массив с указателями на описание положения для каждой метки
 	// map <string, int> position_file; // *динамический массив с указателями на описание положения для каждой метки
 	// map <string, int> properties_int; // *указатель на массив с числовыми свойствами свойствами папки
@@ -602,6 +615,13 @@ void TreeFiles_delete__delete_node (VirtualFolder* VF_node)
 	// int level;
 	// map < string, VirtualFolder__global_position > GLobal_position;
 	// int is_vertex;
+}
+void TreeFiles_delete__clear_memory_for_file (VirtualFolder* VF_delete_folder, int number_file)
+{
+	if (number_file >= 0)
+	{
+		delete *(VF_delete_folder->files.begin() + number_file); //получаем указатель из вектора, и удаляем его
+	}
 }
 
 
@@ -691,15 +711,10 @@ VirtualFolder* TreeFiles_pass (VirtualFolder* TF, std::string label) //<!--+~ (�
 	}
 
 
-	VirtualFolder* VF_current_folder;
+	VirtualFolder* VF_current_folder = NULL;
 	if ((TF->GLobal_position[label]).folder == NULL)
 	{ //вставляем данные в случае первой обработки
 		VF_current_folder = TF;
-		if (TF != VF_current_folder)
-		{
-			(TF->GLobal_position[label].folder)->parent->position[label] = -1;
-			TF->GLobal_position[label].level = -1;
-		}
 	}
 	else
 	{ //элемент обработан, постановка этого событя на учет
