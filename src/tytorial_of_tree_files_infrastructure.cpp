@@ -36,7 +36,6 @@ TreeFiles_add(указатель на дерево файлов, строка в
 	TreeFiles_add(test, "1a/2a/filetwo.jpg");  //создается файл filetwo.jpg
 	TreeFiles_add(test, "1c/");
 
-	TreeFiles_delete(test, "1a/");
 	TreeFiles_visuale(test); //визуализируем то, что надобавляли, для отладки функция
 
 
@@ -45,6 +44,8 @@ TreeFiles_add(указатель на дерево файлов, строка в
 
 cout << endl << endl << endl << endl << endl << endl;
 cout << "DEMONSTRATION: delete" << endl;
+	TreeFiles_delete(test, "1a/");
+	TreeFiles_visuale(test); //визуализируем то, что надобавляли, для отладки функция
 
 
 

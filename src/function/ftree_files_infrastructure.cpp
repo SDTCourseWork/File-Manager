@@ -43,6 +43,10 @@ VirtualFolder* TreeFiles_create ()
 
 VirtualFolder__file* TreeFiles_find_file (VirtualFolder* VF_dad_folder, std::string address)
 {
+	if (VF_dad_folder == NULL)
+		return NULL;
+
+
 	replace(address, "\\", "/");
 
 
@@ -73,6 +77,10 @@ VirtualFolder__file* TreeFiles_find_file (VirtualFolder* VF_dad_folder, std::str
 // >	(ДФ ред)
 VirtualFolder* TreeFiles_find_folder (VirtualFolder* VF_dad_folder, std::string address)
 {
+	if (VF_dad_folder == NULL)
+		return NULL;
+
+
 	replace(address, "\\", "/");
 
 
@@ -122,6 +130,10 @@ VirtualFolder* TreeFiles_find_folder (VirtualFolder* VF_dad_folder, std::string 
 // >	(ДФ ред)
 void TreeFiles_add (VirtualFolder* VF_dad_folder, std::string address)
 {
+	if (VF_dad_folder == NULL)
+		return ;
+
+
 	replace(address, "\\", "/");
 
 
@@ -173,6 +185,10 @@ VirtualFolder__file* TreeFiles_add__find_dota_file (std::string s_file_name, Vir
 }
 void TreeFiles_add__file_add (std::string s_file_name, VirtualFolder* VF_folder)
 {
+	if (VF_folder == NULL)
+		Error_print("NULL, no proreties");
+
+
 	VirtualFolder__file* new_file = new VirtualFolder__file;
 	new_file->properties_string["Name"] = s_file_name;
 	VF_folder->files.push_back(new_file);
@@ -180,12 +196,20 @@ void TreeFiles_add__file_add (std::string s_file_name, VirtualFolder* VF_folder)
 
 VirtualFolder* TreeFiles_add__end_vector_of_VF (VirtualFolder* VF_dad_folder)
 {
+	if (VF_dad_folder == NULL)
+		return NULL;
+
+
 	vector < VirtualFolder* >::iterator VFITER_save_dota_folder = VF_dad_folder->v_child_folders.end();
 	VFITER_save_dota_folder--;
 	return *VFITER_save_dota_folder;
 }
 VirtualFolder* TreeFiles_add__create_new_local_VF (VirtualFolder* VF_dad_folder, std::string s_folder_of_address, int level)
 {
+	if (VF_dad_folder == NULL)
+		return NULL;
+
+
 	VirtualFolder* VF_new_folder = new VirtualFolder; //Создаем дочернюю папку и ЗАДАЕМ ЕЁ СВОЙСВА
 	VF_new_folder->properties_string["Name"] = s_folder_of_address;
 	VF_new_folder->parent = VF_dad_folder;
@@ -196,6 +220,10 @@ VirtualFolder* TreeFiles_add__create_new_local_VF (VirtualFolder* VF_dad_folder,
 }
 VirtualFolder* TreeFiles_add__find_dota_folder (VirtualFolder* VF_dad_folder, std::string s_address_folder)
 {
+	if (VF_dad_folder == NULL)
+		return NULL;
+
+
 	VirtualFolder* VF_save_dota_folder = NULL;
 	int isset_folder_in_TF = 0;
 	int ttest = 0;
@@ -437,6 +465,12 @@ std::string TreeFiles_get_address_of_folder (VirtualFolder* VF_current_folder)
 void TreeFiles_delete (VirtualFolder* TF, std::string address)
 { //<!--~ настоящий код ниже закомментен
 
+	if (TF == NULL)
+	{
+		Error_print("NULL, no proreties");
+		return ;
+	}
+
 	std::string s_file_name = TreeFiles_add__separation_file(address);
 	vector <string> v_folders_of_address = TreeFiles_add__separation_folder(address);
 	std::string s_address_folder = Implode(v_folders_of_address, "/") + "/";
@@ -446,8 +480,6 @@ void TreeFiles_delete (VirtualFolder* TF, std::string address)
 		if (s_file_name == "")
 		{ //Удаление папки дочерней
 			int number_dota_folder = find_number_dota_folder(VF_current_folder->parent, v_folders_of_address.back());
-			cout << "id616: " << VF_current_folder->parent->v_child_folders.size() 
-			<< "ndf: " << number_dota_folder << endl;
 			if (number_dota_folder >= 0)
 				VF_current_folder->parent->v_child_folders.erase(VF_current_folder->parent->v_child_folders.begin() + number_dota_folder);
 		}
@@ -457,7 +489,10 @@ void TreeFiles_delete (VirtualFolder* TF, std::string address)
 			if (number_dota_file >= 0)
 				VF_current_folder->files.erase(VF_current_folder->files.begin() + number_dota_file);
 		
-}	}
+		}	
+	}
+
+
 /*версия без утечки памяти*/
 /*	int level = 0;
 	int i = 0;
@@ -495,6 +530,10 @@ void TreeFiles_delete (VirtualFolder* TF, std::string address)
 }
 int find_number_dota_folder (VirtualFolder* VF_folder, std::string name_folder)
 {
+	if (VF_folder == NULL)
+		return -1;
+
+
 	int save_increment = -1;
 	int i = 0;
 	for (auto VF_Iter_folder : VF_folder->v_child_folders)
@@ -510,6 +549,10 @@ int find_number_dota_folder (VirtualFolder* VF_folder, std::string name_folder)
 }
 int find_number_dota_file (VirtualFolder* VF_folder, std::string name_files)
 {
+	if (VF_folder == NULL)
+		return -1;
+
+	
 	vector < VirtualFolder__file* >::iterator Iter_files;
 	int save_increment = -1;
 	int i = 0;
@@ -527,7 +570,8 @@ int find_number_dota_file (VirtualFolder* VF_folder, std::string name_files)
 }
 void TreeFiles_delete__delete_node (VirtualFolder* VF_node)
 {
-
+	if (VF_node == NULL)
+		return ;
 
 
 	/*версия без утечки памяти*/
@@ -632,6 +676,13 @@ void TreeFiles_pass_files_on_start (VirtualFolder* VF_current_folder, std::strin
 // ::	конец каталога
 VirtualFolder* TreeFiles_pass (VirtualFolder* TF, std::string label) //<!--+~ (вроде решил) произойдет ошибка сегментации, если на вход дать не верхушку дерева
 {
+	if (TF == NULL)
+	{
+		Error_print("NULL, no proreties");
+		return NULL;
+	}
+
+
 	if (TF->is_vertex == 0)
 	{
 		Error_print("This is not the tip of a tree");
@@ -671,10 +722,23 @@ VirtualFolder* TreeFiles_pass (VirtualFolder* TF, std::string label) //<!--+~ (�
 }
 int TreeFiles_pass__properties_level (VirtualFolder* TF, std::string label)
 {
+	if (TF == NULL)
+	{
+		Error_print("NULL, no proreties");
+		return 0;
+	}
+
+
 	return TF->GLobal_position[label].level;
 }
 VirtualFolder* TreeFiles_pass__correct_pointer (VirtualFolder* VF_current_folder, int* level, std::string label)
 {
+	if (VF_current_folder == NULL)
+	{
+		Error_print("NULL, no proreties");
+		return NULL;
+	}
+
 	VirtualFolder* VF_diving = TreeFiles_pass__diving(VF_current_folder, label); //погружаемся
 	if (VF_diving != NULL)
 	{
@@ -726,15 +790,27 @@ VirtualFolder* TreeFiles_pass__diving (VirtualFolder* VF_current_folder, std::st
 }
 VirtualFolder* TreeFiles_pass__next_equal_folder (VirtualFolder* VF_current_folder, int level, std::string label)
 {
+	if (VF_current_folder == NULL)
+	{
+		Error_print("NULL, no proreties");
+		return NULL;
+	}
+
+
 	return TreeFiles_pass__diving(VF_current_folder->parent, label);
 }
 
 VirtualFolder* TreeFiles_pass__surfacing (VirtualFolder* VF_current_folder, int* level, std::string label)
 {
 	if (VF_current_folder == NULL)
+	{
+		Error_print("NULL, no proreties");
 		return NULL;
+	}
+
+
 	VirtualFolder* VF_parent = VF_current_folder->parent;
-	// level--;
+	// level--; магия
 	while (true)
 	{
 		if (((*level) < 1) || (VF_parent == NULL) || (VF_parent->parent == NULL)) //?
@@ -776,6 +852,13 @@ VirtualFolder* TreeFiles_pass__surfacing (VirtualFolder* VF_current_folder, int*
 //-------------ОТЛАДОЧНЫЕ-------------------------
 void TESTING_PRINT_ALL_DOTA_FOLDER (VirtualFolder* VF_current_folder, int level)
 {
+	if (VF_current_folder == NULL)
+	{
+		Error_print("NULL, no proreties");
+		return ;
+	}
+
+
 	VirtualFolder* VF_save_dota_folder = NULL;
 	int i = 0;
 	cout << "count: " << VF_current_folder->v_child_folders.size() << endl;
@@ -810,6 +893,13 @@ void TESTING_PRINT_ALL_DOTA_FOLDER (VirtualFolder* VF_current_folder, int level)
 // ::	
 void TreeFiles_visuale (VirtualFolder* TF)
 {
+	if (TF == NULL)
+	{
+		Error_print("NULL, no proreties");
+		return ;
+	}
+
+
 	set<string> mandatory_properties; //Свойства которые не выводятся в описании файла
 	mandatory_properties.insert("Name");
 	VirtualFolder* VF_current_folder;
@@ -831,10 +921,17 @@ void TreeFiles_visuale (VirtualFolder* TF)
 }
 void TreeFiles_visuale__print_folder (VirtualFolder* VF_current_folder, set<string> mandatory_properties, string tabulation)
 { //Печатаем текущую папку и ее свойства
-		cout << tabulation << "'-- " << VF_current_folder->properties_string["Name"];
-		TreeFiles_visuale__print_property_folder__string(VF_current_folder, tabulation, mandatory_properties);
-		TreeFiles_visuale__print_property_folder__int(VF_current_folder, tabulation, mandatory_properties);
-		cout << endl;
+	if (VF_current_folder == NULL)
+	{
+		Error_print("NULL, no proreties");
+		return ;
+	}
+
+
+	cout << tabulation << "'-- " << VF_current_folder->properties_string["Name"];
+	TreeFiles_visuale__print_property_folder__string(VF_current_folder, tabulation, mandatory_properties);
+	TreeFiles_visuale__print_property_folder__int(VF_current_folder, tabulation, mandatory_properties);
+	cout << endl;
 }
 void TreeFiles_visuale__print_files (VirtualFolder* VF_current_folder, set<string> mandatory_properties, string tabulation)
 { //Печатаем файлы и их свойства
