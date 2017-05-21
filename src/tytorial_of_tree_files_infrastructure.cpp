@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <time.h>
 
 using namespace std;
 
@@ -36,20 +37,33 @@ TreeFiles_add(указатель на дерево файлов, строка в
 	TreeFiles_add(test, "1a/2a/"); //создается папка 2a внутри папки 1a
 	TreeFiles_add(test, "1a/2a/fileone"); //создается файл fileone
 	TreeFiles_add(test, "1a/2a/filetwo.jpg");  //создается файл filetwo.jpg
+	TreeFiles_add(test, "1b/2a/3a/"); //все промежуточные папки создаются сами
 	TreeFiles_add(test, "1c/");
-
+	// VirtualFolder__file* test_file2 = TreeFiles_find_file(test, "1a/2a/fileone"); //получаем указатель на файл fileone
+	// TreeFiles_change_file_property_string(test_file2, "Name_tytorial_of_test_file", "new_name_file");
 	TreeFiles_visuale(test); //визуализируем то, что надобавляли, для отладки функция
+
 
 
 
 
 
 cout << endl << endl << endl << endl << endl << endl;
+cout << "DEMONSTRATION: remove" << endl;
+	TreeFiles_files_remove(test, "1a/2a/fileone", "1c/remove/fileone_rmove");
+	TreeFiles_visuale(test); //визуализируем то, что надобавляли, для отладки функция
+
+
+
+
+
+/*
+cout << endl << endl << endl << endl << endl << endl;
 cout << "DEMONSTRATION: delete" << endl;
 	TreeFiles_delete(test, "1a/2a/fileone");
 	TreeFiles_visuale(test); //визуализируем то, что надобавляли, для отладки функция
 
-
+*/
 
 
 

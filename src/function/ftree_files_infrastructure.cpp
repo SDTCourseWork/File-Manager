@@ -635,15 +635,90 @@ void TreeFiles_delete__clear_memory_for_file (VirtualFolder* VF_delete_folder, i
 
 
 
-// #КОПИРОВАТЬ
+// #ПЕРЕМЕСТИТЬ
 // <	местонахождение каталога
 // <	местоназначение каталога
 // >	(ДФ ред)
 // ::	входящий каталог не найден
 // 	исходящий каталог не найден
+void TreeFiles_files_remove (VirtualFolder* TF, std::string s_from, std::string s_to)
+{
+	replace(s_from, "\\", "/");
+	replace(s_to, "\\", "/");
+	if (!(TreeFiles_is_address_files(s_from) && TreeFiles_is_address_files(s_to)))
+	{
+		Error_print("The input should come from the file addresses (the file addresses do NOT end with \"/\")");
+		return ;
+	}
 
 
+	VirtualFolder__file* VFF_from = TreeFiles_find_file(TF, s_from);
+	if (VFF_from != NULL)
+	{
+		TreeFiles_add(TF, s_to);
+		std::string folder_address_s_to = TreeFiles_get_address_folder(s_to);
+		VirtualFolder* VF_current_folder_s_to = TreeFiles_find_folder(TF, folder_address_s_to);
+		std::string s_file_name_to = TreeFiles_add__separation_file(s_to);
 
+
+		vector < VirtualFolder__file* >::iterator Iter_files;
+		for (Iter_files = VF_current_folder_s_to->files.begin(); Iter_files != VF_current_folder_s_to->files.end(); Iter_files++)
+		{ //Ищем файл, чтобы изменить его указатель на переносимый объект
+			if (std_string_compare(s_file_name_to, (*Iter_files)->properties_string["Name"]) == 0)
+			{
+				delete *Iter_files; //Удаляем структуру в куче, созданную TreeFiles_add, чтобы небыло утечке, при дальнейшей замене указатля
+				TreeFiles_files_remove__delete_on_vector(TF, s_from);
+				TreeFiles_change_file_property_string(VFF_from, "Name", s_file_name_to);
+				*Iter_files = VFF_from;
+				break; // Поиск окончен
+			}
+		}
+	}
+	else
+	{
+		Error_print("Movable file not found");
+	}
+}
+void TreeFiles_files_remove__delete_on_vector (VirtualFolder* TF, std::string address)
+{
+	std::string folder_address = TreeFiles_get_address_folder(address);
+	VirtualFolder* VF_folder = TreeFiles_find_folder(TF, folder_address);
+
+	std::string name_file = TreeFiles_add__separation_file(address);
+	vector < VirtualFolder__file* >::iterator Iter_files;
+	int i = 0;
+	for (Iter_files = VF_folder->files.begin(); Iter_files != VF_folder->files.end(); Iter_files++)
+	{
+		if (std_string_compare(name_file, (*Iter_files)->properties_string["Name"]) == 0)
+		{
+			VF_folder->files.erase(VF_folder->files.begin() + i);
+			break; //файл найден, Поиск окончен
+		}
+		i++;
+	}
+}
+std::string TreeFiles_get_address_folder (std::string address)
+{
+	std::string s_address_folder = "";
+	vector <string> v_folders_of_address = Explode(address, '/');
+
+	if (address[address.size() - 1] != '/') //если нам передали файл (просто папки оканчиваются на '/')
+	{
+		v_folders_of_address = Explode(address, '/');
+		v_folders_of_address.erase(v_folders_of_address.end() - 1); //удаляем последний элемент
+		s_address_folder = Implode(v_folders_of_address, "/");
+	}
+
+	return s_address_folder + "/";
+}
+std::string TreeFiles_address_correct_in_files (std::string address)
+{
+
+}
+int TreeFiles_is_address_files (std::string address)
+{
+	return address[address.size() - 1] != '/'; 
+}
 
 
 
@@ -654,7 +729,7 @@ void TreeFiles_delete__clear_memory_for_file (VirtualFolder* VF_delete_folder, i
 
 // #ПРОГУЛКА ПО ФАЙЛАМ ПАПКИ
 VirtualFolder__file* TreeFiles_pass_files (VirtualFolder* VF_current_folder, std::string label)
-{//<~
+{//<~ не эффективное решение
 	if (VF_current_folder == NULL)
 		return NULL;
 
@@ -916,6 +991,7 @@ void TreeFiles_visuale (VirtualFolder* TF)
 	}
 
 	int rand_base_no_inicialization;
+	rand_base_no_inicialization = rand_base_no_inicialization * rand_base_no_inicialization % 10000 + 1 + rand() % 10000;
 	srand(rand_base_no_inicialization); //Меняем базу, внутри функции это не делается, это нужно, чтобы каждый раз числа были рандомные
 	std::string visualization_label = create_rand_string(10);
 

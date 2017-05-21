@@ -91,6 +91,14 @@ void TreeFiles_delete__clear_memory_for_file (VirtualFolder* VF_delete_folder, i
 
 
 
+void TreeFiles_files_remove (VirtualFolder* TF, std::string s_from, std::string s_to);
+void TreeFiles_files_remove__delete_on_vector (VirtualFolder* TF, std::string address);
+std::string TreeFiles_get_address_folder (std::string address);
+std::string TreeFiles_address_correct_in_files (std::string address);
+int TreeFiles_is_address_files (std::string address);
+
+
+
 
 void TreeFiles_visuale (VirtualFolder* TF);
 	void TreeFiles_visuale__print_folder(VirtualFolder* VF_current_folder, set<string> mandatory_properties, string tabulation);
