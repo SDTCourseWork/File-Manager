@@ -47,6 +47,21 @@ int MainWindow::exist_resolution (QString filename, QStringList only_exist_list,
     QStringList strList = filename.split('.');
     QString exist = strList.at(strList.size() - 1);
 
- 
+     int flag_only = 0;
+    if (only_exist_list.at(0) != "")
+    {
+        for (int i = 0; i < only_exist_list.size(); i++)
+        {
+            if (QString::compare(exist, only_exist_list.at(i)) == 0)
+            {
+                flag_only = 1;
+                break;
+            }
+
+        }
+    }
+    else
+        flag_only = 1;
+
     return (flag_delete || !flag_only); //если функция запрещенная или ее нет в списке разрешенных
 }
