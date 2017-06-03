@@ -13,8 +13,6 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-
-};
 public:
     int exist_resolution (QString filename, QStringList only_exist_list, QStringList delete_exist_list);
     void Obrabotka (QString full_filename, QStringList only_exist_list, QStringList delete_exist_list);
@@ -24,6 +22,21 @@ public:
     explicit MainWindow(QWidget *parent = 0);
 
     ~MainWindow();
+
+private:
+    Ui::MainWindow *ui;
+
+public slots:
+    void add_input_directory();
+    void Processing();
+};
+
+
+
+
+
+
+
 
 
 #endif // MAINWINDOWTQW_H

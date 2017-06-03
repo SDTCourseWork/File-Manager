@@ -63,5 +63,15 @@ int MainWindow::exist_resolution (QString filename, QStringList only_exist_list,
     else
         flag_only = 1;
 
+ int flag_delete = 0;
+    for (int i = 0; i < delete_exist_list.size(); i++)
+    {
+        if (QString::compare(exist, delete_exist_list.at(i)) == 0)
+        {
+            flag_delete = 1;
+            break;
+        }
+    }
+
     return (flag_delete || !flag_only); //если функция запрещенная или ее нет в списке разрешенных
 }
