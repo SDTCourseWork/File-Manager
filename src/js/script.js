@@ -2,11 +2,11 @@
 
 $(function(){
 	var os = require('os');
-	var prettyBytes = require('pretty-bytes');
-
+		var prettyBytes = require('pretty-bytes');
+/*
 	$('.stats').append('Number of cpu cores: <span>' + os.cpus().length + 'asdf</span>');
 	$('.stats').append('Free memory: <span>' + prettyBytes(os.freemem()) + 'adf</span>');
-
+*/
 
 	var gui = require('nw.gui');
 });
@@ -24,15 +24,33 @@ function data_of_form ()
 
 	return arr_data;
 }
-$("#group_proceccing_1").click(function(){
-	var arr_data = {};
-	var arr_data = data_of_form();
-	var str_folders = arr_data["list_input_folder"];
-	var folders = str_folders.split('\n');
-	var text = "";
-	jQuery.each(folders, function(i, val)
-	{
-		text += val + "\n";
+
+ 
+
+ 
+function processing_of_files (file)
+{
+    return function(err, stats) {
+            $('.stats').append("<br>processing: " + file + "\n\n");
+        }
+}
+function read_folder_recursion (fs, str_path)
+{
+	fs.readdir(str_path, function(err, items) {
+		for (var i = 0; i < items.length; i++) {
+			var filing_obj = str_path + '/' + items[i];
+			
+			read_folder_recursion(fs, filing_obj);
+			fs.stat(filing_obj, processing_of_files(filing_obj));
+		}
 	});
-	alert(text);
+}
+$("#group_proceccing_1").click(function(){
+	var arr_data = data_of_form();
+	var folders = arr_data["list_input_folder"].split('\n');
+	jQuery.each(folders, function(i, str_path)
+	{
+		var fs = require('fs');
+		read_folder_recursion(fs, str_path);
+	});
 });
