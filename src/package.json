@@ -32,6 +32,7 @@
     "window": {
         "height": 500,
         "id": "test_webkit",
+        "show_in_taskbar": true,
         "title": "test_webkit",
         "toolbar": false,
         "width": 800
