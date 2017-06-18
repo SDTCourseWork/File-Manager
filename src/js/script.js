@@ -1,14 +1,8 @@
 // Mixing jQuery and Node.js code in the same file? Yes please!
 
-$(function(){
-	var os = require('os');
-		var prettyBytes = require('pretty-bytes');
-/*
-	$('.stats').append('Number of cpu cores: <span>' + os.cpus().length + 'asdf</span>');
-	$('.stats').append('Free memory: <span>' + prettyBytes(os.freemem()) + 'adf</span>');
-*/
+$(function()
+{
 
-	var gui = require('nw.gui');
 });
 
 
@@ -28,29 +22,46 @@ function data_of_form ()
  
 
  
-function processing_of_files (file)
-{
-    return function(err, stats) {
-            $('.stats').append("<br>processing: " + file + "\n\n");
-        }
-}
-function read_folder_recursion (fs, str_path)
-{
-	fs.readdir(str_path, function(err, items) {
-		for (var i = 0; i < items.length; i++) {
-			var filing_obj = str_path + '/' + items[i];
-			
-			read_folder_recursion(fs, filing_obj);
-			fs.stat(filing_obj, processing_of_files(filing_obj));
+
+
+var fs = require('fs');
+var path = require('path');
+var getFiles = function (dir, files_){
+	files_ = files_ || [];
+	var files = fs.readdirSync(dir);
+	for (var i in files){
+		var name = dir + '/' + files[i];
+		if (fs.statSync(name).isDirectory()){
+			getFiles(name, files_);
+		} else {
+			files_.push(name);
 		}
-	});
-}
-$("#group_proceccing_1").click(function(){
+	}
+	return files_;
+};
+$("#group_proceccing_1").click(function()
+{
 	var arr_data = data_of_form();
 	var folders = arr_data["list_input_folder"].split('\n');
+
 	jQuery.each(folders, function(i, str_path)
 	{
-		var fs = require('fs');
-		read_folder_recursion(fs, str_path);
+		var list_files = getFiles(str_path);
+		jQuery.each(list_files, function(i, file)
+		{
+			processing_of_files(file);
+		});
 	});
 });
+
+
+
+
+
+
+
+
+function processing_of_files (file)
+{
+	$('.stats').append("<br>processing: " + file);
+}
