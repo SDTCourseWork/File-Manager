@@ -11,8 +11,10 @@ $("#group_proceccing_1").click(function()
 		{
 			processing_of_files(file);
 		});
+		//очищение для локальной обработки
 	});
-	//очищение для локальной обработки
+	//очищение после того, как обработали все переданные каталоги
+	isCopy_reset();
 });
 
 
@@ -24,6 +26,12 @@ $("#group_proceccing_1").click(function()
 
 
 
+var LIST_HASH = {};
+function isCopy_reset ()
+{
+	LIST_HASH = null;
+	LIST_HASH = {};
+}
 function isCopy (file)
 {
 	var hash = hash_of_file(file);
@@ -46,7 +54,6 @@ function isCopy (file)
 
 
 
-var LIST_HASH = {};
 function processing_of_files (file)
 {
 
